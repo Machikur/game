@@ -1,6 +1,7 @@
-package com.kodilla.view.background;
+package com.kodilla.userinterface.view.background;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 public class BackgroundScene {
@@ -11,8 +12,13 @@ public class BackgroundScene {
     public Background background() {
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(imageback, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        Background background = new Background(backgroundImage);
-        return background;
+        return new Background(backgroundImage);
+    }
+    public ImageView getImageView(){
+        ImageView imageView= new ImageView(imageback);
+        imageView.setFitHeight(800);
+        imageView.setFitWidth(1050);
+        return imageView;
     }
 
 }
