@@ -6,19 +6,31 @@ import javafx.scene.layout.*;
 
 public class BackgroundScene {
 
-    private Image imageback = new Image("file:Game/resources/zamek.bmp");
+    private Image imageback = new Image("file:Game/resources/castle.jpg");
 
-
-    public Background background() {
-        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
-        BackgroundImage backgroundImage = new BackgroundImage(imageback, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        return new Background(backgroundImage);
-    }
-    public ImageView getImageView(){
-        ImageView imageView= new ImageView(imageback);
-        imageView.setFitHeight(800);
-        imageView.setFitWidth(1050);
+    public ImageView getImageView() {
+        ImageView imageView = new ImageView(imageback);
+        imageView.setFitHeight(600);
+        imageView.setFitWidth(1024);
         return imageView;
     }
 
+    public Background getBackground() {
+        Image image = new Image("file:Game/resources/castles.jpg.jpg");
+        BackgroundSize backgroundSize = new BackgroundSize(1024, 768, true, true, true, false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        return background;
+
+    }
+
+    public Background getGameBackground() {
+        Image image = new Image("file:Game/resources/castles.jpg");
+        BackgroundSize backgroundSize = new BackgroundSize(1024, 768, true, true, true, false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        return background;
+
+
+    }
 }

@@ -1,9 +1,13 @@
 package com.kodilla.userinterface.view.rules;
 
-import com.kodilla.userinterface.BoardUI;
+import com.kodilla.userinterface.Game;
+import com.kodilla.userinterface.view.background.BackgroundScene;
+import com.kodilla.userinterface.view.menu.Menu;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -18,27 +22,41 @@ public class Rules {
     private Stage stage;
 
 
-    public Rules() {
+    public void getRules(Stage primaryStage) {
+        this.stage = primaryStage;
 
-        double nodeWidth = BoardUI.SCENE_WIDTH / 1.4f;
-        double nodeHeight = BoardUI.SCENE_HEIGHT / 2f;
+        BackgroundScene backgroundScene = new BackgroundScene();
+
+        double nodeWidth = Game.SCENE_WIDTH;
+        double nodeHeight = Game.SCENE_HEIGHT;
 
         BorderPane border = new BorderPane();
-        Text text = new Text("Znalazłeś sie u bram zamku którego strzegą smoki\n Aby się dostać musisz je pokonać\n" +
+        border.setBackground(backgroundScene.getBackground());
+
+        DropShadow ds = new DropShadow();
+        ds.setOffsetY(3.0f);
+        ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
+
+        Text text = new Text(" Znalazłeś sie u bram zamku którego strzegą smoki\n Aby się dostać musisz je pokonać\n" +
                 " Chcą one abyście na zmiane ciągneli po jednej,\n dwóch lub trzech zapałkach.\n Wygrywa ten który pociągnie ostatni\n Powodzenia");
-        text.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 30));
+        text.setFont(Font.font(null, FontWeight.BOLD, 40));
+        text.setCache(true);
+        text.setX(10.0f);
+        text.setY(270.0f);
+        text.setFill(Color.BLUE);
+        text.setEffect(ds);
         border.setCenter(text);
 
-        Scene scene = new Scene(border, nodeWidth, nodeHeight, Color.BLACK);
-        Stage startStage = new Stage();
-        startStage.setScene(scene);
+        HBox hBox = getDefinedHBox();
+        hBox.setAlignment(Pos.CENTER);
+        border.setBottom(hBox);
 
-        border.setBottom(getDefinedHBox());
-
-        this.stage = startStage;
+        Scene scene = new Scene(border, nodeWidth, nodeHeight, Color.WHITE);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
-    private HBox getDefinedHBox(){
+    private HBox getDefinedHBox() {
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(0, 270, 0, 300));
         hBox.getChildren().add(getButton());
@@ -49,16 +67,13 @@ public class Rules {
         Button button = new Button();
         button.setText("Kontynnuj");
         button.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 20));
-        button.setMinSize(50, 20);
-        button.setOnAction(param ->
-                this.stage.close());
-
+        button.setMinSize(200, 80);
+        button.setOnAction(param -> {
+            Menu menu = new Menu();
+            menu.start(stage);
+        });
         return button;
 
-    }
-
-    public Stage getStage() {
-        return stage;
     }
 
 
