@@ -1,18 +1,16 @@
-package com.kodilla.userinterface.view.match;
+package com.kodilla.userinterface.view.matches;
 
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
 
 
 public class MatchesHBox {
+    BackgroundScene backgroundScene = new BackgroundScene();
     private Image image = new Image("file:Game/resources/zapalka.bmp");
-    BackgroundScene backgroundScene=new BackgroundScene();
-
-
 
     public HBox gethBox(int value) {
         HBox hBox = new HBox();

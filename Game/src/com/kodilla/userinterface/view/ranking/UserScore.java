@@ -13,13 +13,13 @@ public class UserScore implements Serializable {
     private int points;
     private GameDifficult gameDifficult;
 
-    public UserScore(String name, int scoreUser, int scoreDragon,GameDifficult gameDifficult) {
+    public UserScore(String name, int scoreUser, int scoreDragon, GameDifficult gameDifficult) {
         this.name = name;
         this.scoreUser = scoreUser;
         this.scoreDragon = scoreDragon;
         localDate = LocalDate.now();
-        points=scoreDragon-scoreUser;
-        this.gameDifficult=gameDifficult;
+        points = scoreDragon - scoreUser;
+        this.gameDifficult = gameDifficult;
     }
 
     @Override

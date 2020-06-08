@@ -1,7 +1,7 @@
 package com.kodilla.userinterface.view.ranking;
 
 import com.kodilla.datahandler.DataHandler;
-import com.kodilla.userinterface.Game;
+import com.kodilla.userinterface.view.game.Game;
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -76,11 +76,11 @@ public class Ranking {
         if (bestUsers.size() == 0) {
             text.setText("Brak pozycji w rankingu");
         } else {
-            String records = "";
+            StringBuilder records = new StringBuilder();
             for (int i = 0; i < bestUsers.size(); i++) {
-                records += (i + 1 + " " + bestUsers.get(i) + "\n");
+                records.append(i).append(1).append(" ").append(bestUsers.get(i)).append("\n");
             }
-            text.setText(records);
+            text.setText(records.toString());
         }
         DropShadow ds = new DropShadow();
         text.setFont(Font.font(null, FontWeight.BOLD, 30));

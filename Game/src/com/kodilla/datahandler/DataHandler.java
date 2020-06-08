@@ -24,9 +24,8 @@ public class DataHandler {
         return o;
     }
 
-    public void saveFile(Object o,File file) {
+    public void saveFile(Object o, File file) {
         try {
-            file.delete();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(o);

@@ -1,8 +1,7 @@
 package com.kodilla.userinterface.view.rules;
 
-import com.kodilla.userinterface.Game;
+import com.kodilla.userinterface.view.game.Game;
 import com.kodilla.userinterface.view.background.BackgroundScene;
-import com.kodilla.userinterface.view.menu.Menu;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -23,9 +22,9 @@ public class Rules {
     private Scene menuScene;
 
 
-    public void getRules(Stage primaryStage,Scene menuScene) {
+    public void getRules(Stage primaryStage, Scene menuScene) {
         this.stage = primaryStage;
-        this.menuScene=menuScene;
+        this.menuScene = menuScene;
 
         BackgroundScene backgroundScene = new BackgroundScene();
 

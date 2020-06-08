@@ -1,7 +1,5 @@
 package com.kodilla.engine;
 
-import com.kodilla.userinterface.Game;
-
 import java.util.Random;
 
 public class Engine {
@@ -9,11 +7,11 @@ public class Engine {
     private GameDifficult gameDifficult;
 
     public Engine(GameDifficult gameDifficult) {
-        this.gameDifficult=gameDifficult;
+        this.gameDifficult = gameDifficult;
     }
 
     public int dragonTurn(int matchesValue) {
-        if (gameDifficult==GameDifficult.HARD) {
+        if (gameDifficult == GameDifficult.HARD) {
             int result = matchesValue % 4;
             if (result == 0) {
                 return random.nextInt(2) + 1;
@@ -21,7 +19,7 @@ public class Engine {
                 return result;
             }
         }
-        if (gameDifficult==GameDifficult.MEDIUM) {
+        if (gameDifficult == GameDifficult.MEDIUM) {
             int result = matchesValue % 2;
             if (matchesValue < 4) {
                 return matchesValue;
@@ -32,7 +30,7 @@ public class Engine {
                 return result;
             }
         }
-        if (gameDifficult==GameDifficult.EASY) {
+        if (gameDifficult == GameDifficult.EASY) {
             if (matchesValue < 4) {
                 return matchesValue;
             } else {

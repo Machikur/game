@@ -3,8 +3,8 @@ package com.kodilla.userinterface.view.menu;
 import com.kodilla.datahandler.DataHandler;
 import com.kodilla.datahandler.GameHandler;
 import com.kodilla.engine.GameDifficult;
-import com.kodilla.userinterface.Game;
 import com.kodilla.userinterface.view.background.BackgroundScene;
+import com.kodilla.userinterface.view.game.Game;
 import com.kodilla.userinterface.view.ranking.Ranking;
 import com.kodilla.userinterface.view.rules.Rules;
 import javafx.geometry.Pos;
@@ -24,19 +24,20 @@ import javafx.stage.Stage;
 
 public class Menu {
     private GameDifficult gameDifficult = GameDifficult.EASY;
-    private Stage stage;
     private BorderPane borderPane = new BorderPane();
     private Rules rules = new Rules();
     private Ranking ranking = new Ranking();
     private DataHandler dataHandler = new DataHandler();
     private GameHandler gameHandler = new GameHandler();
     private Game game;
+    private BackgroundScene backgroundScene = new BackgroundScene();
+
+
 
 
     public void start(Stage primaryStage) {
-        this.stage = primaryStage;
 
-        BackgroundScene backgroundScene = new BackgroundScene();
+
         Scene scene = new Scene(borderPane, Game.SCENE_WIDTH, Game.SCENE_HEIGHT, Color.WHITE);
 
         VBox vBox = new VBox(30);
@@ -61,9 +62,8 @@ public class Menu {
 
 
         Button ranking = newButton("Ranking");
-        ranking.setOnAction(param -> {
-            this.ranking.getRanking(primaryStage, scene);
-        });
+        ranking.setOnAction(param ->
+                this.ranking.getRanking(primaryStage, scene));
 
         Button rulesButton = newButton("Show rules");
         rulesButton.setOnAction(param -> rules.getRules(primaryStage, scene));
@@ -115,6 +115,7 @@ public class Menu {
 
         hBox.getChildren().addAll(easy, medium, hard);
         hBox.setAlignment(Pos.CENTER);
+        hBox.setStyle("-fx-background-color: \t#808080;");
         return hBox;
     }
 
@@ -129,7 +130,7 @@ public class Menu {
         if (gameDifficult.equals(GameDifficult.HARD)) {
             text.setText("Difficult Hard");
         }
-        text.setFont(Font.font(null, FontWeight.NORMAL, FontPosture.REGULAR, 20));
+        text.setFont(Font.font(null, FontWeight.NORMAL, FontPosture.REGULAR, 30));
         text.setFill(Paint.valueOf("#FF0000"));
 
         borderPane.setTop(text);
