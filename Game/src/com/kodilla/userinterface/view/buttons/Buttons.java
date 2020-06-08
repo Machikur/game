@@ -33,16 +33,5 @@ public class Buttons {
         return button;
     }
 
-    public Button newButton() {
-        Button button = new Button();
-        button.setPrefSize(200, 20);
-        button.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 20));
-        return button;
-    }
 
-    public void newOperativeButton(Button button, String text, EventHandler<ActionEvent> actionEventEventHandler) {
-        button.setText(text);
-        button.setOnAction(actionEventEventHandler);
-        button.setPrefSize(250, 40);
-    }
 }

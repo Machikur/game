@@ -184,12 +184,15 @@ public class Game {
     }
 
     private Button[] getOperativeButtons() {
-        Button one = buttons.newButton();
-        buttons.newOperativeButton(one, "Zabierz jedną zapałke", setTakeSomeMatchesActionEvent(1, one));
-        Button two = buttons.newButton();
-        buttons.newOperativeButton(two, "Zabierz dwie zapałki", setTakeSomeMatchesActionEvent(2, two));
-        Button thre = buttons.newButton();
-        buttons.newOperativeButton(thre, "Zabierz trzy zapałki", setTakeSomeMatchesActionEvent(3, thre));
+        Button one = buttons.newButton("Zabierz jedną zapałke");
+        one.setPrefSize(250,40);
+        one.setOnAction(setTakeSomeMatchesActionEvent(1,one));
+        Button two = buttons.newButton("Zabierz dwie zapałki");
+        two.setOnAction(setTakeSomeMatchesActionEvent(2,two));
+        two.setPrefSize(250,40);
+        Button thre = buttons.newButton("Zabierz trzy zapałki");
+        thre.setOnAction(setTakeSomeMatchesActionEvent(3,thre));
+        thre.setPrefSize(250,40);
         return new Button[]{one, two, thre};
     }
 
