@@ -1,6 +1,8 @@
 package com.kodilla.userinterface.view.menu;
 
 import com.kodilla.datahandler.DataHandler;
+import com.kodilla.datahandler.GameHandler;
+import com.kodilla.engine.GameDifficult;
 import com.kodilla.userinterface.Game;
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import com.kodilla.userinterface.view.ranking.Ranking;
@@ -21,50 +23,67 @@ import javafx.stage.Stage;
 
 
 public class Menu {
-    private int difficulty = 0;
+    private GameDifficult gameDifficult = GameDifficult.EASY;
     private Stage stage;
     private BorderPane borderPane = new BorderPane();
     private Rules rules = new Rules();
-    private Ranking ranking=new Ranking();
+    private Ranking ranking = new Ranking();
+    private DataHandler dataHandler = new DataHandler();
+    private GameHandler gameHandler = new GameHandler();
+    private Game game;
 
 
     public void start(Stage primaryStage) {
         this.stage = primaryStage;
 
         BackgroundScene backgroundScene = new BackgroundScene();
+        Scene scene = new Scene(borderPane, Game.SCENE_WIDTH, Game.SCENE_HEIGHT, Color.WHITE);
 
-        VBox vBox = new VBox(80);
+        VBox vBox = new VBox(30);
 
         Button start = newButton("Start new\n   game");
         start.setOnAction(param -> {
-            Game game = new Game(difficulty, 21, ranking);
+            game = new Game(gameDifficult, 0, 0, 21, ranking, scene);
             game.game(primaryStage);
         });
 
-        Button load = newButton("Ranking");
+        Button load = newButton("Load last\n   game");
         load.setOnAction(param -> {
-            ranking.getRanking(primaryStage);
+            String[] gameSave = gameHandler.LoadGame();
+            if (gameSave.length == 3) {
+                GameDifficult gameDifficult = GameDifficult.valueOf(gameSave[2]);
+                int dragonScores = Integer.parseInt(gameSave[1]);
+                int userScores = Integer.parseInt(gameSave[0]);
+                game = new Game(gameDifficult, dragonScores, userScores, 21, ranking, scene);
+                game.game(primaryStage);
+            }
+        });
+
+
+        Button ranking = newButton("Ranking");
+        ranking.setOnAction(param -> {
+            this.ranking.getRanking(primaryStage, scene);
         });
 
         Button rulesButton = newButton("Show rules");
-        rulesButton.setOnAction(param -> rules.getRules(primaryStage));
+        rulesButton.setOnAction(param -> rules.getRules(primaryStage, scene));
 
         Button exit = newButton("Exit");
         exit.setOnAction(p -> {
-            DataHandler dataHandler = new DataHandler();
-            dataHandler.saveFile(ranking.getBestUsers());
+            dataHandler.saveFile(this.ranking.getBestUsers(), this.ranking.getFile());
+            gameHandler.saveGame(game);
             primaryStage.close();
 
         });
 
-        vBox.getChildren().addAll(start, load, rulesButton, exit);
+        vBox.getChildren().addAll(start, load, ranking, rulesButton, exit);
         vBox.setAlignment(Pos.CENTER);
         borderPane.setCenter(vBox);
         borderPane.setBackground(backgroundScene.getBackground());
         borderPane.setBottom(difficultyButtons());
         difficultyText();
 
-        Scene scene = new Scene(borderPane, Game.SCENE_WIDTH, Game.SCENE_HEIGHT, Color.WHITE);
+
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -83,15 +102,15 @@ public class Menu {
         HBox hBox = new HBox(80);
 
         Button easy = newButton("Easy");
-        easy.setOnAction(p -> setDifficulty(0));
+        easy.setOnAction(p -> setDifficulty(GameDifficult.EASY));
         easy.setPrefSize(200, 40);
 
         Button medium = newButton("Medium");
-        medium.setOnAction(p -> setDifficulty(1));
+        medium.setOnAction(p -> setDifficulty(GameDifficult.MEDIUM));
         medium.setPrefSize(200, 40);
 
         Button hard = newButton("Hard");
-        hard.setOnAction(p -> setDifficulty(2));
+        hard.setOnAction(p -> setDifficulty(GameDifficult.HARD));
         hard.setPrefSize(200, 40);
 
         hBox.getChildren().addAll(easy, medium, hard);
@@ -101,13 +120,13 @@ public class Menu {
 
     private void difficultyText() {
         Text text = new Text();
-        if (difficulty == 0) {
+        if (gameDifficult.equals(GameDifficult.EASY)) {
             text.setText("Difficult Easy");
         }
-        if (difficulty == 1) {
+        if (gameDifficult.equals(GameDifficult.MEDIUM)) {
             text.setText("Difficult Medium");
         }
-        if (difficulty == 2) {
+        if (gameDifficult.equals(GameDifficult.HARD)) {
             text.setText("Difficult Hard");
         }
         text.setFont(Font.font(null, FontWeight.NORMAL, FontPosture.REGULAR, 20));
@@ -116,8 +135,8 @@ public class Menu {
         borderPane.setTop(text);
     }
 
-    public void setDifficulty(int difficulty) {
-        this.difficulty = difficulty;
+    public void setDifficulty(GameDifficult gameDifficult) {
+        this.gameDifficult = gameDifficult;
         difficultyText();
     }
 

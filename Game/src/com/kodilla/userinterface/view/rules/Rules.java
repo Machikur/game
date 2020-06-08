@@ -20,10 +20,12 @@ import javafx.stage.Stage;
 public class Rules {
 
     private Stage stage;
+    private Scene menuScene;
 
 
-    public void getRules(Stage primaryStage) {
+    public void getRules(Stage primaryStage,Scene menuScene) {
         this.stage = primaryStage;
+        this.menuScene=menuScene;
 
         BackgroundScene backgroundScene = new BackgroundScene();
 
@@ -38,7 +40,7 @@ public class Rules {
         ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
 
         Text text = new Text(" Znalazłeś sie u bram zamku którego strzegą smoki\n Aby się dostać musisz je pokonać\n" +
-                " Chcą one abyście na zmiane ciągneli po jednej,\n dwóch lub trzech zapałkach.\n Wygrywa ten który pociągnie ostatni\n Powodzenia");
+                " Chcą one abyście na zmiane ciągneli po jednej,\n dwóch lub trzech zapałkach.\n Wygrywa ten który pociągnie ostatni\n Musisz pokonać go 5 razy\n Powodzenia");
         text.setFont(Font.font(null, FontWeight.BOLD, 40));
         text.setCache(true);
         text.setX(10.0f);
@@ -65,12 +67,12 @@ public class Rules {
 
     private Button getButton() {
         Button button = new Button();
-        button.setText("Kontynnuj");
+        button.setText("Continue");
         button.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 20));
         button.setMinSize(200, 80);
         button.setOnAction(param -> {
-            Menu menu = new Menu();
-            menu.start(stage);
+            stage.setScene(menuScene);
+            stage.show();
         });
         return button;
 

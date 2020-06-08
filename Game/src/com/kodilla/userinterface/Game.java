@@ -1,11 +1,11 @@
 package com.kodilla.userinterface;
 
 import com.kodilla.engine.Engine;
+import com.kodilla.engine.GameDifficult;
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import com.kodilla.userinterface.view.match.MatchesHBox;
-import com.kodilla.userinterface.view.menu.Menu;
 import com.kodilla.userinterface.view.ranking.Ranking;
-import com.kodilla.userinterface.view.ranking.User;
+import com.kodilla.userinterface.view.ranking.UserScore;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -24,11 +24,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class Game {
+public class Game{
     public final static int SCENE_WIDTH = 1024;
     public final static int SCENE_HEIGHT = 768;
     private final BorderPane borderPane = new BorderPane();
-    private final MatchesHBox matchesGridPane = new MatchesHBox();
+    private final MatchesHBox matchesHBox = new MatchesHBox();
     private final Engine engine;
     private final Scene gameScene =new Scene(borderPane,SCENE_WIDTH,SCENE_HEIGHT,Color.WHITE);
     private int matchesValue;
@@ -36,13 +36,22 @@ public class Game {
     private int dragonScore = 0;
     private Stage primarystage;
     private Ranking ranking;
+    private Scene menuScene;
+    private GameDifficult gameDifficult;
+    private BackgroundScene backgroundScene=new BackgroundScene();
 
-    public Game(int difficulty, int matchesValue, Ranking ranking) {
-        engine = new Engine(difficulty);
+    public Game(GameDifficult gameDifficult,int dragonScore,int userScore, int matchesValue, Ranking ranking, Scene menuScene) {
+        this.gameDifficult=gameDifficult;
+        engine = new Engine(gameDifficult);
         this.matchesValue = matchesValue;
         setGameScene(matchesValue);
         this.ranking = ranking;
+        this.menuScene=menuScene;
+        this.dragonScore=dragonScore;
+        this.userScore=userScore;
     }
+
+
 
 
 
@@ -82,7 +91,7 @@ public class Game {
     }
 
     public void setMatchesValueView() {
-        borderPane.setCenter(matchesGridPane.gethBox(matchesValue));
+        borderPane.setCenter(matchesHBox.gethBox(matchesValue));
     }
 
     private EventHandler<ActionEvent> setTakeSomeMatchesActionEvent(int value, Button button) {
@@ -94,8 +103,9 @@ public class Game {
                 substractMatchesValue(value);
                 setMatchesValueView();
                 if (matchesValue == 0) {
-                    setWinner("Użytkownik");
                     userScore++;
+                    setWinner("Użytkownik");
+
                 }
                 if (matchesValue > 0) {
                     Stage stage = getStatement();
@@ -103,21 +113,18 @@ public class Game {
                     PauseTransition pauseTransition = new PauseTransition(Duration.seconds(0.5));
                     pauseTransition.setOnFinished(event -> {
                         substractMatchesValue(engine.dragonTurn(matchesValue));
+                        setMatchesValueView();
                         if (matchesValue == 0) {
                             stage.close();
-                            setWinner("Smok");
                             dragonScore++;
+                            setWinner("Smok");
+
                         }
-                        setMatchesValueView();
                         stage.close();
                     });
                     pauseTransition.play();
                 }
-                if (userScore == 5) {
-                    ranking.addUser(new User("Gracz", userScore, dragonScore));
-                    userScore = 0;
-                    dragonScore = 0;
-                }
+
             } else button.setTextFill(Color.RED);
         });
     }
@@ -137,12 +144,24 @@ public class Game {
     }
 
     private void setWinner(String winner) {
+        Text winnerText = new Text();
+        winnerText.setText("Wygrał: " + winner + ", Wynik : " + userScore + "-" + dragonScore);
+        winnerText.setFont(Font.font(null, FontWeight.NORMAL, FontPosture.REGULAR, 30));
+        winnerText.setFill(Color.RED);
 
+
+        if (userScore == 5) {
+            ranking.addUser(new UserScore("Gracz", userScore, dragonScore,gameDifficult));
+            winnerText.setText("Brawo, wygrałeś z wynikiem " + userScore + "-" + dragonScore);
+            userScore = 0;
+            dragonScore = 0;
+
+        }
 
         Button menu = newButton("Menu");
         menu.setOnAction(p -> {
-            Menu menu1 = new Menu();
-            menu1.start(primarystage);
+            primarystage.setScene(menuScene);
+            primarystage.show();
         });
 
         Button restart = newButton("Restart");
@@ -159,20 +178,17 @@ public class Game {
 
         borderPane.setBottom(hBox);
 
-        Text winnerText = new Text();
-        winnerText.setText("Wygrał: " + winner);
-        winnerText.setFont(Font.font(null, FontWeight.NORMAL, FontPosture.REGULAR, 30));
-        winnerText.setFill(Color.RED);
+
         borderPane.setCenter(winnerText);
         primarystage.setScene(gameScene);
         primarystage.show();
     }
 
-    private Button newButton(String tekst) {
+    private Button newButton(String text) {
         Button button = new Button();
         button.setPrefSize(200, 20);
         button.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 20));
-        button.setText(tekst);
+        button.setText(text);
         return button;
     }
 
@@ -184,11 +200,22 @@ public class Game {
         borderPane.setMaxSize(SCENE_WIDTH, SCENE_HEIGHT);
         HBox hbox = addHBoxOfButtons();
         borderPane.setBottom(hbox);
-        borderPane.setCenter(matchesGridPane.gethBox(matchesValue));
+        borderPane.setCenter(matchesHBox.gethBox(matchesValue));
 
 
 
     }
 
 
+    public int getUserScore() {
+        return userScore;
+    }
+
+    public int getDragonScore() {
+        return dragonScore;
+    }
+
+    public GameDifficult getGameDifficult() {
+        return gameDifficult;
+    }
 }
