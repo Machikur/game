@@ -33,7 +33,7 @@ public class Menu {
     private Ranking ranking = new Ranking(menuScene, backgroundScene);
     private Button[] difficultButtons = new Button[3];
     private ButtonsAndText buttonsAndText = new ButtonsAndText();
-    private GameData gameData = new GameData();
+    private GameData gameData =new GameData();
     private GameLoader gameLoader = new GameLoader(ranking, menuScene, backgroundScene, game);
     private Stage primaryStage;
     private VBox menuButtons = setMenuButtons();

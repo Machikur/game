@@ -2,6 +2,7 @@ package com.kodilla.engine;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class GameData implements Serializable, Comparable {
     private int userScore = 0;
@@ -11,6 +12,13 @@ public class GameData implements Serializable, Comparable {
 
     public GameData() {
         localDate = LocalDate.now();
+    }
+
+    public GameData(int userScore, int dragonScore, GameDifficult gameDifficult) {
+        this.userScore = userScore;
+        this.dragonScore = dragonScore;
+        this.gameDifficult = gameDifficult;
+        this.localDate=LocalDate.now();
     }
 
     public int getUserScore() {
@@ -40,6 +48,22 @@ public class GameData implements Serializable, Comparable {
     @Override
     public String toString() {
         return localDate + " , " + userScore + "-" + dragonScore + " , " + gameDifficult.getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameData gameData = (GameData) o;
+        return userScore == gameData.userScore &&
+                dragonScore == gameData.dragonScore &&
+                gameDifficult == gameData.gameDifficult &&
+                Objects.equals(localDate, gameData.localDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userScore, dragonScore, gameDifficult, localDate);
     }
 
     @Override

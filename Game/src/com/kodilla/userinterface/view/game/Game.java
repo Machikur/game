@@ -146,7 +146,8 @@ public class Game {
 
         Button saveAndExit = buttonsAndText.newButton("Save and Exit", 200, 20);
         saveAndExit.setOnAction(p -> {
-            gameLoader.addGameData(gameData);
+            gameLoader.addGameData(new GameData(gameData.getUserScore(),gameData.getDragonScore(),gameData.getGameDifficult()));
+            gameData=new GameData();
             primaryStage.setScene(menuScene);
             primaryStage.show();
 

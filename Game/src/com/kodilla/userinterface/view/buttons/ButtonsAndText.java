@@ -47,5 +47,4 @@ public class ButtonsAndText {
         return text;
     }
 
-
 }
