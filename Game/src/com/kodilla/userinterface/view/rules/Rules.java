@@ -1,7 +1,7 @@
 package com.kodilla.userinterface.view.rules;
 
-import com.kodilla.userinterface.view.game.Game;
 import com.kodilla.userinterface.view.background.BackgroundScene;
+import com.kodilla.userinterface.view.game.Game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

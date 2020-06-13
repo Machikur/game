@@ -19,7 +19,7 @@ public class Engine {
                 return result;
             }
         }
-        if (gameDifficult == GameDifficult.MEDIUM) {
+        if (gameDifficult == GameDifficult.EASY) {
             int result = matchesValue % 2;
             if (matchesValue < 4) {
                 return matchesValue;
@@ -30,7 +30,7 @@ public class Engine {
                 return result;
             }
         }
-        if (gameDifficult == GameDifficult.EASY) {
+        if (gameDifficult == GameDifficult.MEDIUM) {
             if (matchesValue < 4) {
                 return matchesValue;
             } else {

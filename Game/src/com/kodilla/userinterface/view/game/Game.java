@@ -1,10 +1,11 @@
 package com.kodilla.userinterface.view.game;
 
+import com.kodilla.datahandler.GameStatics;
 import com.kodilla.engine.Engine;
 import com.kodilla.engine.GameData;
-import com.kodilla.engine.GameDifficult;
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import com.kodilla.userinterface.view.buttons.ButtonsAndText;
+import com.kodilla.userinterface.view.loadgame.GameLoader;
 import com.kodilla.userinterface.view.matches.MatchesHBox;
 import com.kodilla.userinterface.view.ranking.Ranking;
 import com.kodilla.userinterface.view.ranking.UserScore;
@@ -25,38 +26,37 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.List;
 import java.util.Random;
 
 public class Game {
     public final static int SCENE_WIDTH = 1024;
     public final static int SCENE_HEIGHT = 768;
-    private final static int DEFAULT_MATCHES_VALUE=21;
-    private int matchesValue = 21;
     private final BorderPane borderPane = new BorderPane();
     private final MatchesHBox matchesHBox = new MatchesHBox();
     private final Engine engine;
     private final Scene gameScene = new Scene(borderPane, SCENE_WIDTH, SCENE_HEIGHT, Color.WHITE);
+    private int matchesValue = 21;
     private Random random = new Random();
     private Stage primaryStage;
     private Ranking ranking;
     private Scene menuScene;
     private BackgroundScene backgroundScene = new BackgroundScene();
     private ButtonsAndText buttonsAndText = new ButtonsAndText();
+    private GameData gameData;
     private Button[] operativeButtons = getOperativeButtons();
-    private GameData gameData = new GameData();
-    private List<GameData> gameDataList;
+    private GameLoader gameLoader;
 
-    public Game(GameData gameData, Ranking ranking, Scene menuScene, List<GameData> gameDataList) {
+    public Game(GameData gameData, Ranking ranking, Scene menuScene, GameLoader gameLoader) {
+        this.gameData = gameData;
         this.engine = new Engine(gameData.getGameDifficult());
-        setGameScene();
         this.ranking = ranking;
         this.menuScene = menuScene;
-        this.gameDataList = gameDataList;
+        this.gameLoader = gameLoader;
+        setGameScene();
     }
 
     public void game(Stage primaryStage) {
-        matchesValue=DEFAULT_MATCHES_VALUE;
+        matchesValue = GameStatics.DEFAULT_MATCHES_VALUE;
         this.primaryStage = primaryStage;
         primaryStage.setScene(gameScene);
         primaryStage.show();
@@ -85,13 +85,13 @@ public class Game {
 
 
     private Stage getStatement() {
-        Text text = new Text("Smok się zastanawia");
+        Text text = new Text(GameStatics.DRAGON_NAME + " się zastanawia");
         text.setFont(Font.font(null, FontWeight.NORMAL, FontPosture.REGULAR, 30));
         VBox vBox = new VBox();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(0.2));
         pauseTransition.setOnFinished(param -> {
             if (text.getText().length() > 21) {
-                text.setText("Smok się zastanawia");
+                text.setText(GameStatics.DRAGON_NAME + " się zastanawia");
             } else {
                 text.setText(text.getText() + ".");
             }
@@ -112,7 +112,7 @@ public class Game {
         Text winnerText = new Text();
         winnerText.setText("Wygrał: " + winner + ", Wynik : " + gameData.getUserScore() + "-" + gameData.getDragonScore());
         winnerText.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 30));
-        if (winner.equals("Smok")) {
+        if (winner.equals(GameStatics.DRAGON_NAME)) {
             winnerText.setFill(Color.RED);
         } else {
             winnerText.setFill(Color.BLUE);
@@ -124,7 +124,7 @@ public class Game {
         BorderPane.setAlignment(winnerText, Pos.CENTER);
 
         if (gameData.getUserScore() == 5) {
-            ranking.addUser(new UserScore("Gracz", gameData.getUserScore(), gameData.getDragonScore(), gameData.getGameDifficult()));
+            ranking.addUser(new UserScore(GameStatics.USER_NAME, gameData.getUserScore(), gameData.getDragonScore(), gameData.getGameDifficult()));
             winnerText.setText("Brawo, wygrałeś z wynikiem " + gameData.getUserScore() + "-" + gameData.getDragonScore());
             gameData.setUserScore(0);
             gameData.setDragonScore(0);
@@ -146,7 +146,7 @@ public class Game {
 
         Button saveAndExit = buttonsAndText.newButton("Save and Exit", 200, 20);
         saveAndExit.setOnAction(p -> {
-            gameDataList.add(gameData);
+            gameLoader.addGameData(gameData);
             primaryStage.setScene(menuScene);
             primaryStage.show();
 
@@ -190,7 +190,7 @@ public class Game {
         setMatchesValueView();
         if (matchesValue == 0) {
             gameData.setUserScore(gameData.getUserScore() + 1);
-            setWinner("Użytkownik");
+            setWinner(GameStatics.USER_NAME);
         }
     }
 
@@ -206,7 +206,7 @@ public class Game {
             if (matchesValue == 0) {
                 stage.close();
                 gameData.setDragonScore(gameData.getDragonScore() + 1);
-                setWinner("Smok");
+                setWinner(GameStatics.DRAGON_NAME);
             }
             stage.close();
             unblockButtons();

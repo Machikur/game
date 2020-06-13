@@ -4,8 +4,13 @@ import java.io.*;
 
 public class DataHandler {
 
-    public Object loadFile(String path) {
-        File file = new File(path);
+    public Object loadFile(String fileName) {
+        String directoryName = "data";
+        File directory = new File(directoryName);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        File file = new File(directoryName + "/" + fileName);
         if (file.length() == 0) {
             return null;
         }
@@ -21,9 +26,14 @@ public class DataHandler {
         return o;
     }
 
-    public void saveFile(Object o, String path) {
+    public void saveFile(Object o, String fileName) {
         try {
-            File file = new File(path);
+            String directoryName = "data";
+            File directory = new File(directoryName);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+            File file = new File(directoryName + "/" + fileName);
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(o);

@@ -3,18 +3,11 @@ package com.kodilla.engine;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class GameData implements Serializable {
+public class GameData implements Serializable, Comparable {
     private int userScore = 0;
     private int dragonScore = 0;
     private GameDifficult gameDifficult = GameDifficult.EASY;
     private LocalDate localDate;
-
-    public GameData(int userScore, int dragonScore, GameDifficult gameDifficult) {
-        this.userScore = userScore;
-        this.dragonScore = dragonScore;
-        this.gameDifficult = gameDifficult;
-        localDate = LocalDate.now();
-    }
 
     public GameData() {
         localDate = LocalDate.now();
@@ -49,4 +42,10 @@ public class GameData implements Serializable {
         return localDate + " , " + userScore + "-" + dragonScore + " , " + gameDifficult.getName();
     }
 
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof GameData) {
+            return localDate.compareTo(((GameData) o).localDate);
+        } else return 0;
+    }
 }

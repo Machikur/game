@@ -1,7 +1,5 @@
 package com.kodilla.userinterface.view.buttons;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
@@ -28,7 +26,7 @@ public class ButtonsAndText {
         return hbox;
     }
 
-    public Button newButton(String text,int prefWidth,int prefHeight) {
+    public Button newButton(String text, int prefWidth, int prefHeight) {
         Button button = new Button();
         button.setPrefSize(prefWidth, prefHeight);
         button.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 20));
@@ -36,7 +34,7 @@ public class ButtonsAndText {
         return button;
     }
 
-    public Text getTextEffect(Text text){
+    public Text getTextEffect(Text text) {
         DropShadow ds = new DropShadow();
         text.setFont(Font.font(null, FontWeight.BOLD, 30));
         ds.setOffsetY(3.0f);
