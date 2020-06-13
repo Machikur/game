@@ -1,10 +1,12 @@
 package com.kodilla.userinterface.view.menu;
 
 import com.kodilla.datahandler.DataHandler;
-import com.kodilla.datahandler.GameHandler;
+import com.kodilla.datahandler.Paths;
+import com.kodilla.engine.GameData;
 import com.kodilla.engine.GameDifficult;
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import com.kodilla.userinterface.view.game.Game;
+import com.kodilla.userinterface.view.loadgame.GameLoader;
 import com.kodilla.userinterface.view.ranking.Ranking;
 import com.kodilla.userinterface.view.rules.Rules;
 import javafx.geometry.Pos;
@@ -14,64 +16,64 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 public class Menu {
-    private GameDifficult gameDifficult = GameDifficult.EASY;
+    public static String DEFAULTBUTTONSTYLE = new Button().getStyle();
+
     private BorderPane borderPane = new BorderPane();
     private Rules rules = new Rules();
-    private Ranking ranking = new Ranking();
     private DataHandler dataHandler = new DataHandler();
-    private GameHandler gameHandler = new GameHandler();
     private Game game;
     private BackgroundScene backgroundScene = new BackgroundScene();
-
+    private Scene menuScene=new Scene(borderPane, Game.SCENE_WIDTH, Game.SCENE_HEIGHT, Color.WHITE);
+    private Ranking ranking=new Ranking(menuScene,backgroundScene);
+    private Button[] difficultButtons = new Button[3];
+    private List<GameData> gameDataList=getGameDataList();
+    private GameData gameData=new GameData();
+    private GameLoader gameLoader;
 
 
 
     public void start(Stage primaryStage) {
 
-
-        Scene scene = new Scene(borderPane, Game.SCENE_WIDTH, Game.SCENE_HEIGHT, Color.WHITE);
-
         VBox vBox = new VBox(30);
-
         Button start = newButton("Start new\n   game");
         start.setOnAction(param -> {
-            game = new Game(gameDifficult, 0, 0, 21, ranking, scene);
+            if (Objects.isNull(game)) {
+                game = new Game(gameData, ranking, menuScene, gameDataList);
+            }
             game.game(primaryStage);
         });
 
-        Button load = newButton("Load last\n   game");
+        Button load = newButton("Load game");
         load.setOnAction(param -> {
-            String[] gameSave = gameHandler.LoadGame();
-            if (gameSave.length == 3) {
-                GameDifficult gameDifficult = GameDifficult.valueOf(gameSave[2]);
-                int dragonScores = Integer.parseInt(gameSave[1]);
-                int userScores = Integer.parseInt(gameSave[0]);
-                game = new Game(gameDifficult, dragonScores, userScores, 21, ranking, scene);
-                game.game(primaryStage);
+            if (Objects.isNull(gameLoader)) {
+                 gameLoader = new GameLoader(gameDataList, ranking, menuScene, backgroundScene, game);
             }
+            gameLoader.Start(primaryStage);
         });
 
 
         Button ranking = newButton("Ranking");
         ranking.setOnAction(param ->
-                this.ranking.getRanking(primaryStage, scene));
+                this.ranking.getRanking(primaryStage));
 
         Button rulesButton = newButton("Show rules");
-        rulesButton.setOnAction(param -> rules.getRules(primaryStage, scene));
+        rulesButton.setOnAction(param -> rules.getRules(primaryStage, menuScene));
 
         Button exit = newButton("Exit");
         exit.setOnAction(p -> {
-            dataHandler.saveFile(this.ranking.getBestUsers(), this.ranking.getFile());
-            gameHandler.saveGame(game);
+            dataHandler.saveFile(this.ranking.getBestUsers(), Paths.RANKING_PATH);
+            dataHandler.saveFile(gameDataList, Paths.GAMEDATA_PATH);
             primaryStage.close();
 
         });
@@ -81,10 +83,8 @@ public class Menu {
         borderPane.setCenter(vBox);
         borderPane.setBackground(backgroundScene.getBackground());
         borderPane.setBottom(difficultyButtons());
-        difficultyText();
 
-
-        primaryStage.setScene(scene);
+        primaryStage.setScene(menuScene);
         primaryStage.show();
 
     }
@@ -100,46 +100,43 @@ public class Menu {
 
     private HBox difficultyButtons() {
         HBox hBox = new HBox(80);
+        int counter = 0;
 
-        Button easy = newButton("Easy");
-        easy.setOnAction(p -> setDifficulty(GameDifficult.EASY));
-        easy.setPrefSize(200, 40);
+        for (GameDifficult gameDif : GameDifficult.values()) {
+            Button button = newButton(gameDif.getName());
+            button.setOnAction(p -> {
+                setDifficulty(gameDif);
+                setButtonsColor();
+                button.setStyle("-fx-background-color: chartreuse");
+            });
 
-        Button medium = newButton("Medium");
-        medium.setOnAction(p -> setDifficulty(GameDifficult.MEDIUM));
-        medium.setPrefSize(200, 40);
+            button.setPrefSize(200, 40);
+            hBox.getChildren().add(button);
+            difficultButtons[counter] = button;
+            counter++;
+        }
 
-        Button hard = newButton("Hard");
-        hard.setOnAction(p -> setDifficulty(GameDifficult.HARD));
-        hard.setPrefSize(200, 40);
-
-        hBox.getChildren().addAll(easy, medium, hard);
         hBox.setAlignment(Pos.CENTER);
-        hBox.setStyle("-fx-background-color: \t#808080;");
         return hBox;
     }
 
-    private void difficultyText() {
-        Text text = new Text();
-        if (gameDifficult.equals(GameDifficult.EASY)) {
-            text.setText("Difficult Easy");
-        }
-        if (gameDifficult.equals(GameDifficult.MEDIUM)) {
-            text.setText("Difficult Medium");
-        }
-        if (gameDifficult.equals(GameDifficult.HARD)) {
-            text.setText("Difficult Hard");
-        }
-        text.setFont(Font.font(null, FontWeight.NORMAL, FontPosture.REGULAR, 30));
-        text.setFill(Paint.valueOf("#FF0000"));
 
-        borderPane.setTop(text);
+    private void setDifficulty(GameDifficult gameDifficult) {
+        gameData.setGameDifficult(gameDifficult);
     }
 
-    public void setDifficulty(GameDifficult gameDifficult) {
-        this.gameDifficult = gameDifficult;
-        difficultyText();
+    private void setButtonsColor() {
+        for (Button button : difficultButtons) {
+            button.setStyle(DEFAULTBUTTONSTYLE);
+        }
     }
 
+    private List<GameData> getGameDataList(){
+        List<GameData> gameDataList=(List<GameData>) dataHandler.loadFile(Paths.GAMEDATA_PATH);
+        if (Objects.isNull(gameDataList)){
+            return new ArrayList<>();
+        }
+        else return gameDataList;
+    }
 
 }

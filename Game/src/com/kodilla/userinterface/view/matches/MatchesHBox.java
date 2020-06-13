@@ -10,7 +10,7 @@ import javafx.scene.layout.HBox;
 
 public class MatchesHBox {
     BackgroundScene backgroundScene = new BackgroundScene();
-    private Image image = new Image("file:Game/resources/zapalka.bmp");
+    private Image image = new Image("resources/zapalka.bmp");
 
     public HBox gethBox(int value) {
         HBox hBox = new HBox();

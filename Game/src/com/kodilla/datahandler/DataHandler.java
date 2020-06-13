@@ -1,16 +1,13 @@
 package com.kodilla.datahandler;
 
-import com.kodilla.userinterface.view.ranking.UserScore;
-
 import java.io.*;
-import java.util.ArrayList;
 
 public class DataHandler {
 
-
-    public Object loadFile(File file) {
+    public Object loadFile(String path) {
+        File file = new File(path);
         if (file.length() == 0) {
-            return new ArrayList<UserScore>();
+            return null;
         }
         Object o = new Object();
         try {
@@ -24,8 +21,9 @@ public class DataHandler {
         return o;
     }
 
-    public void saveFile(Object o, File file) {
+    public void saveFile(Object o, String path) {
         try {
+            File file = new File(path);
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(o);

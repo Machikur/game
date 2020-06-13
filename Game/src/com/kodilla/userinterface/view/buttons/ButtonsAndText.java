@@ -4,13 +4,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 
-public class Buttons {
+public class ButtonsAndText {
 
     public HBox addHBoxOfButtons(Button[] buttons) {
         HBox hbox = new HBox();
@@ -25,12 +28,25 @@ public class Buttons {
         return hbox;
     }
 
-    public Button newButton(String text) {
+    public Button newButton(String text,int prefWidth,int prefHeight) {
         Button button = new Button();
-        button.setPrefSize(200, 20);
+        button.setPrefSize(prefWidth, prefHeight);
         button.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 20));
         button.setText(text);
         return button;
+    }
+
+    public Text getTextEffect(Text text){
+        DropShadow ds = new DropShadow();
+        text.setFont(Font.font(null, FontWeight.BOLD, 30));
+        ds.setOffsetY(3.0f);
+        ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
+        text.setCache(true);
+        text.setX(10.0f);
+        text.setY(270.0f);
+        text.setFill(Color.BLUE);
+        text.setEffect(ds);
+        return text;
     }
 
 

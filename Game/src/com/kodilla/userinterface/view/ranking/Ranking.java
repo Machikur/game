@@ -1,23 +1,23 @@
 package com.kodilla.userinterface.view.ranking;
 
 import com.kodilla.datahandler.DataHandler;
+import com.kodilla.datahandler.Paths;
+import com.kodilla.userinterface.view.buttons.ButtonsAndText;
 import com.kodilla.userinterface.view.game.Game;
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Ranking {
@@ -25,25 +25,27 @@ public class Ranking {
 
     private Stage stage;
     private Scene menuScene;
-    private File file = new File("Game/resources/ranking.txt");
+    private BackgroundScene backgroundScene;
+    private ButtonsAndText buttonsAndText=new ButtonsAndText();
 
     private List<UserScore> bestUsers = new ArrayList<>();
 
-    public Ranking() {
+    public Ranking(Scene menuScene,BackgroundScene backgroundScene) {
+        this.menuScene=menuScene;
+        this.backgroundScene=backgroundScene;
         try {
             DataHandler dataHandler = new DataHandler();
-            bestUsers = (ArrayList<UserScore>) dataHandler.loadFile(file);
+            bestUsers = (ArrayList<UserScore>) dataHandler.loadFile(Paths.RANKING_PATH);
+            if (Objects.isNull(bestUsers)) {
+                bestUsers = new ArrayList<>();
+            }
         } catch (Exception s) {
             s.printStackTrace();
         }
     }
 
-    public void getRanking(Stage primaryStage, Scene menuScene) {
+    public void getRanking(Stage primaryStage) {
         this.stage = primaryStage;
-        this.menuScene = menuScene;
-
-        BackgroundScene backgroundScene = new BackgroundScene();
-
 
         BorderPane border = new BorderPane();
         border.setBackground(backgroundScene.getBackground());
@@ -78,20 +80,12 @@ public class Ranking {
         } else {
             StringBuilder records = new StringBuilder();
             for (int i = 0; i < bestUsers.size(); i++) {
-                records.append(i).append(1).append(" ").append(bestUsers.get(i)).append("\n");
+                records.append(i + 1).append(" ").append(bestUsers.get(i)).append("\n");
             }
             text.setText(records.toString());
         }
-        DropShadow ds = new DropShadow();
-        text.setFont(Font.font(null, FontWeight.BOLD, 30));
-        ds.setOffsetY(3.0f);
-        ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
-        text.setCache(true);
-        text.setX(10.0f);
-        text.setY(270.0f);
-        text.setFill(Color.BLUE);
-        text.setEffect(ds);
-        return text;
+
+        return buttonsAndText.getTextEffect(text);
 
     }
 
@@ -103,10 +97,7 @@ public class Ranking {
     }
 
     private Button getButton() {
-        Button button = new Button();
-        button.setText("Kontynnuj");
-        button.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 20));
-        button.setMinSize(200, 80);
+        Button button = buttonsAndText.newButton("Menu",200,20);
         button.setOnAction(param -> {
             stage.setScene(menuScene);
             stage.show();
@@ -118,11 +109,8 @@ public class Ranking {
     public List<UserScore> getBestUsers() {
         return bestUsers;
     }
-
-    public File getFile() {
-        return file;
-    }
 }
+
 
 
 

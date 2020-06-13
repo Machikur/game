@@ -6,8 +6,8 @@ import javafx.scene.layout.*;
 
 public class BackgroundScene {
 
-    private Image imageback = new Image("file:Game/resources/castle.jpg");
-    private Image backgroundImage = new Image("file:Game/resources/green.jpg");
+    private Image imageback = new Image("resources/castle.jpg");
+    private Image backgroundImage = new Image("resources/green.jpg");
 
     public ImageView getImageView() {
         ImageView imageView = new ImageView(imageback);
@@ -17,7 +17,7 @@ public class BackgroundScene {
     }
 
     public Background getBackground() {
-        Image image = new Image("file:Game/resources/castles.jpg.jpg");
+        Image image = new Image("resources/castles.jpg.jpg");
         BackgroundSize backgroundSize = new BackgroundSize(1024, 768, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         return new Background(backgroundImage);
