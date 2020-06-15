@@ -1,7 +1,7 @@
 package com.kodilla.userinterface.view.rules;
 
+import com.kodilla.datahandler.GameStatics;
 import com.kodilla.userinterface.view.background.BackgroundScene;
-import com.kodilla.userinterface.view.game.Game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -28,8 +28,8 @@ public class Rules {
 
         BackgroundScene backgroundScene = new BackgroundScene();
 
-        double nodeWidth = Game.SCENE_WIDTH;
-        double nodeHeight = Game.SCENE_HEIGHT;
+        double nodeWidth = GameStatics.SCENE_WIDTH;
+        double nodeHeight = GameStatics.SCENE_HEIGHT;
 
         BorderPane border = new BorderPane();
         border.setBackground(backgroundScene.getBackground());

@@ -4,7 +4,6 @@ import com.kodilla.datahandler.DataHandler;
 import com.kodilla.datahandler.GameStatics;
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import com.kodilla.userinterface.view.buttons.ButtonsAndText;
-import com.kodilla.userinterface.view.game.Game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,14 +32,11 @@ public class Ranking {
     public Ranking(Scene menuScene, BackgroundScene backgroundScene) {
         this.menuScene = menuScene;
         this.backgroundScene = backgroundScene;
-        try {
-            DataHandler dataHandler = new DataHandler();
-            bestUsers = (ArrayList<UserScore>) dataHandler.loadFile(GameStatics.RANKING_PATH);
-            if (Objects.isNull(bestUsers)) {
-                bestUsers = new ArrayList<>();
-            }
-        } catch (Exception s) {
-            s.printStackTrace();
+
+        DataHandler dataHandler = new DataHandler();
+        bestUsers = (ArrayList<UserScore>) dataHandler.loadFile(GameStatics.RANKING_PATH);
+        if (Objects.isNull(bestUsers)) {
+            bestUsers = new ArrayList<>();
         }
     }
 
@@ -106,7 +102,7 @@ public class Ranking {
         border.setBottom(hBox);
 
 
-        scene = new Scene(border, Game.SCENE_WIDTH, Game.SCENE_HEIGHT);
+        scene = new Scene(border, GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT);
     }
 }
 

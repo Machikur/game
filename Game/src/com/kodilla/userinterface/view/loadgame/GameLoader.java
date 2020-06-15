@@ -34,13 +34,13 @@ public class GameLoader {
     private Game game;
     private BackgroundScene backgroundScene;
     private Button selectedButton;
+    private DataHandler dataHandler = new DataHandler();
 
     public GameLoader(Ranking ranking, Scene menuScene, BackgroundScene backgroundScene, Game game) {
         this.backgroundScene = backgroundScene;
         this.menuScene = menuScene;
         this.ranking = ranking;
         this.game = game;
-        DataHandler dataHandler = new DataHandler();
         this.list = (List<GameData>) dataHandler.loadFile(GameStatics.GAMEDATA_PATH);
         if (Objects.isNull(list)) {
             list = new ArrayList<>();
@@ -48,7 +48,7 @@ public class GameLoader {
 
     }
 
-    public void Start(Stage primaryStage) {
+    public void start(Stage primaryStage) {
         setScene();
         this.primaryStage = primaryStage;
 
@@ -60,7 +60,7 @@ public class GameLoader {
         VBox vBox = new VBox();
         if (Objects.nonNull(list) && list.size() != 0) {
             ArrayList<Button> buttonsList = new ArrayList<>();
-            vBox.setSpacing(50 / list.size());
+            vBox.setSpacing(50f / list.size());
             for (int i = 0; i < list.size(); i++) {
                 final int index = i;
                 Button button = buttonsAndText.newButton(i + 1 + ". " + list.get(index), 350, 60);
@@ -97,7 +97,7 @@ public class GameLoader {
             Button loadGame = buttonsAndText.newButton("Load game", 200, 20);
             loadGame.setOnAction(p -> {
                 if (Objects.nonNull(chosenGameData)) {
-                    game = new Game(chosenGameData, ranking, menuScene, this);
+                    game.setGameData(chosenGameData.getUserScore(), chosenGameData.getDragonScore(), chosenGameData.getGameDifficult());
                     game.game(primaryStage);
                 }
             });
@@ -107,7 +107,7 @@ public class GameLoader {
                 if (chosenGameData != null) {
                     list.remove(chosenGameData);
                     chosenGameData = null;
-                    Start(primaryStage);
+                    start(primaryStage);
                 }
             });
             hBox.getChildren().addAll(loadGame, deleteSave);
@@ -126,7 +126,7 @@ public class GameLoader {
         borderPane.setBottom(hBox);
 
         borderPane.setBackground(backgroundScene.getBackground());
-        scene = new Scene(borderPane, Game.SCENE_WIDTH, Game.SCENE_HEIGHT, Color.WHITE);
+        scene = new Scene(borderPane, GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT, Color.WHITE);
     }
 
     public List<GameData> getList() {

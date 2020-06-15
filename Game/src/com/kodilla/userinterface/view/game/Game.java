@@ -3,6 +3,7 @@ package com.kodilla.userinterface.view.game;
 import com.kodilla.datahandler.GameStatics;
 import com.kodilla.engine.Engine;
 import com.kodilla.engine.GameData;
+import com.kodilla.engine.GameDifficult;
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import com.kodilla.userinterface.view.buttons.ButtonsAndText;
 import com.kodilla.userinterface.view.loadgame.GameLoader;
@@ -29,13 +30,11 @@ import javafx.util.Duration;
 import java.util.Random;
 
 public class Game {
-    public final static int SCENE_WIDTH = 1024;
-    public final static int SCENE_HEIGHT = 768;
     private final BorderPane borderPane = new BorderPane();
     private final MatchesHBox matchesHBox = new MatchesHBox();
     private final Engine engine;
-    private final Scene gameScene = new Scene(borderPane, SCENE_WIDTH, SCENE_HEIGHT, Color.WHITE);
-    private int matchesValue = 21;
+    private final Scene gameScene = new Scene(borderPane, GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT, Color.WHITE);
+    private int matchesValue = GameStatics.DEFAULT_MATCHES_VALUE;
     private Random random = new Random();
     private Stage primaryStage;
     private Ranking ranking;
@@ -45,22 +44,31 @@ public class Game {
     private GameData gameData;
     private Button[] operativeButtons = getOperativeButtons();
     private GameLoader gameLoader;
+    private BorderPane backgroundPane = new BorderPane();
+    private Text userScoreText = new Text();
+    private Text dragonScoreText = new Text();
+    private Text diffText = new Text();
 
-    public Game(GameData gameData, Ranking ranking, Scene menuScene, GameLoader gameLoader) {
+    public Game(GameData gameData, Ranking ranking, Scene menuScene) {
         this.gameData = gameData;
         this.engine = new Engine(gameData.getGameDifficult());
         this.ranking = ranking;
         this.menuScene = menuScene;
-        this.gameLoader = gameLoader;
-        setGameScene();
+        this.gameLoader = new GameLoader(ranking, menuScene, backgroundScene, this);
     }
 
     public void game(Stage primaryStage) {
         matchesValue = GameStatics.DEFAULT_MATCHES_VALUE;
+        setGameScene();
         this.primaryStage = primaryStage;
         primaryStage.setScene(gameScene);
         primaryStage.show();
 
+    }
+
+    public void gameLoader(Stage primaryStage) {
+        setGameScene();
+        gameLoader.start(primaryStage);
     }
 
     private void substractMatchesValue(int value) {
@@ -85,13 +93,14 @@ public class Game {
 
 
     private Stage getStatement() {
-        Text text = new Text(GameStatics.DRAGON_NAME + " się zastanawia");
+        final String baseText = GameStatics.DRAGON_NAME + " się zastanawia";
+        Text text = new Text(baseText);
         text.setFont(Font.font(null, FontWeight.NORMAL, FontPosture.REGULAR, 30));
         VBox vBox = new VBox();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(0.2));
         pauseTransition.setOnFinished(param -> {
             if (text.getText().length() > 21) {
-                text.setText(GameStatics.DRAGON_NAME + " się zastanawia");
+                text.setText(baseText);
             } else {
                 text.setText(text.getText() + ".");
             }
@@ -99,7 +108,7 @@ public class Game {
         });
         vBox.getChildren().addAll(text);
         vBox.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(vBox, Game.SCENE_WIDTH / 3f, Game.SCENE_HEIGHT / 7f, Color.WHITE);
+        Scene scene = new Scene(vBox, GameStatics.SCENE_WIDTH / 3f, GameStatics.SCENE_HEIGHT / 7f, Color.WHITE);
         Stage stage = new Stage();
         stage.setScene(scene);
         pauseTransition.play();
@@ -130,35 +139,7 @@ public class Game {
             gameData.setDragonScore(0);
         }
 
-        Button menu = buttonsAndText.newButton("Menu", 200, 20);
-        menu.setOnAction(p -> {
-            primaryStage.setScene(menuScene);
-            primaryStage.show();
-        });
-
-        Button restart = buttonsAndText.newButton("Restart", 200, 20);
-        restart.setOnAction(p -> {
-            setNormalColorOfButtons();
-            setGameScene();
-            game(primaryStage);
-            setMatchesValueView();
-        });
-
-        Button saveAndExit = buttonsAndText.newButton("Save and Exit", 200, 20);
-        saveAndExit.setOnAction(p -> {
-            gameLoader.addGameData(new GameData(gameData.getUserScore(),gameData.getDragonScore(),gameData.getGameDifficult()));
-            gameData=new GameData();
-            primaryStage.setScene(menuScene);
-            primaryStage.show();
-
-        });
-
-        HBox hBox = new HBox();
-        hBox.setSpacing(50);
-        hBox.getChildren().addAll(menu, restart, saveAndExit);
-        hBox.setAlignment(Pos.CENTER);
-        hBox.setStyle("-fx-background-color: \t#808080;");
-
+        HBox hBox = getGameButtons();
         borderPane.setBottom(hBox);
         borderPane.setCenter(textPane);
         primaryStage.setScene(gameScene);
@@ -167,8 +148,10 @@ public class Game {
 
     private void setGameScene() {
 
-        borderPane.setTop(backgroundScene.getImageView());
-        borderPane.setMaxSize(SCENE_WIDTH, SCENE_HEIGHT);
+
+        setBackgroundPane();
+        borderPane.setTop(backgroundPane);
+        borderPane.setMaxSize(GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT);
 
         HBox hbox = buttonsAndText.addHBoxOfButtons(operativeButtons);
         borderPane.setBottom(hbox);
@@ -231,4 +214,67 @@ public class Game {
         for (Button operativeButton : operativeButtons)
             operativeButton.setTextFill(Color.BLACK);
     }
+
+    private HBox getGameButtons() {
+        Button menu = buttonsAndText.newButton("Menu", 200, 20);
+        menu.setOnAction(p -> {
+            primaryStage.setScene(menuScene);
+            primaryStage.show();
+        });
+
+        Button restart = buttonsAndText.newButton("Restart", 200, 20);
+        restart.setOnAction(p -> {
+            setNormalColorOfButtons();
+            setGameScene();
+            game(primaryStage);
+            setMatchesValueView();
+        });
+
+        Button saveAndExit = buttonsAndText.newButton("Save and Exit", 200, 20);
+        saveAndExit.setOnAction(p -> {
+            gameLoader.addGameData(new GameData(gameData.getUserScore(), gameData.getDragonScore(), gameData.getGameDifficult()));
+            gameData.setStartOfGame(gameData.getGameDifficult());
+            primaryStage.setScene(menuScene);
+            primaryStage.show();
+
+        });
+
+        HBox hBox = new HBox();
+        hBox.setSpacing(50);
+        hBox.getChildren().addAll(menu, restart, saveAndExit);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setStyle("-fx-background-color: \t#808080;");
+        return hBox;
+    }
+
+    private void setBackgroundPane() {
+        backgroundPane.setBackground(backgroundScene.getBackgroundForGame());
+        userScoreText.setText((gameData.getUserScore() + ""));
+        userScoreText.setFill(Color.BLUE);
+        userScoreText.setFont(Font.font(50));
+        dragonScoreText.setText(gameData.getDragonScore() + "");
+        dragonScoreText.setFill(Color.RED);
+        dragonScoreText.setFont(Font.font(50));
+        diffText.setText("Difficult " + gameData.getGameDifficult().getName());
+        diffText.setFont(Font.font(null, FontWeight.BLACK, FontPosture.REGULAR, 50));
+        diffText.setFill(Color.BLACK);
+        BorderPane.setAlignment(diffText, Pos.TOP_CENTER);
+        backgroundPane.setLeft(userScoreText);
+        backgroundPane.setRight(dragonScoreText);
+        backgroundPane.setTop(diffText);
+
+        backgroundPane.setPrefSize(backgroundScene.getImageback().getWidth(), backgroundScene.getImageback().getHeight());
+    }
+
+    public void setGameData(int userScore, int dragonScore, GameDifficult gameDifficult) {
+        this.gameData.setUserScore(userScore);
+        this.gameData.setDragonScore(dragonScore);
+        this.gameData.setGameDifficult(gameDifficult);
+    }
+
+    public GameLoader getGameLoader() {
+        return gameLoader;
+    }
+
 }
+

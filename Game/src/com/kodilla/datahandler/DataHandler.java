@@ -5,12 +5,7 @@ import java.io.*;
 public class DataHandler {
 
     public Object loadFile(String fileName) {
-        String directoryName = "data";
-        File directory = new File(directoryName);
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        File file = new File(directoryName + "/" + fileName);
+        File file = getFile(fileName);
         if (file.length() == 0) {
             return null;
         }
@@ -21,6 +16,7 @@ public class DataHandler {
             o = objectInputStream.readObject();
             objectInputStream.close();
         } catch (IOException | ClassNotFoundException s) {
+            s.printStackTrace();
         }
 
         return o;
@@ -28,18 +24,22 @@ public class DataHandler {
 
     public void saveFile(Object o, String fileName) {
         try {
-            String directoryName = "data";
-            File directory = new File(directoryName);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
-            File file = new File(directoryName + "/" + fileName);
+            File file = getFile(fileName);
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(o);
             objectOutputStream.close();
-        } catch (IOException e) {
-            e.getStackTrace();
+        } catch (IOException s) {
+            s.printStackTrace();
         }
+    }
+
+    private File getFile(String fileName) {
+        String directoryName = "data";
+        File directory = new File(directoryName);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        return new File(directoryName + "/" + fileName);
     }
 }

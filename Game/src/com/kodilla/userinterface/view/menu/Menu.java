@@ -7,7 +7,6 @@ import com.kodilla.engine.GameDifficult;
 import com.kodilla.userinterface.view.background.BackgroundScene;
 import com.kodilla.userinterface.view.buttons.ButtonsAndText;
 import com.kodilla.userinterface.view.game.Game;
-import com.kodilla.userinterface.view.loadgame.GameLoader;
 import com.kodilla.userinterface.view.ranking.Ranking;
 import com.kodilla.userinterface.view.rules.Rules;
 import javafx.geometry.Pos;
@@ -19,7 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.Objects;
+import java.util.ArrayList;
 
 
 public class Menu {
@@ -27,15 +26,14 @@ public class Menu {
     private BorderPane borderPane = new BorderPane();
     private Rules rules = new Rules();
     private DataHandler dataHandler = new DataHandler();
-    private Game game;
     private BackgroundScene backgroundScene = new BackgroundScene();
-    private Scene menuScene = new Scene(borderPane, Game.SCENE_WIDTH, Game.SCENE_HEIGHT, Color.WHITE);
+    private Scene menuScene = new Scene(borderPane, GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT, Color.WHITE);
     private Ranking ranking = new Ranking(menuScene, backgroundScene);
-    private Button[] difficultButtons = new Button[3];
+    private ArrayList<Button> difficultButtons = new ArrayList<>();
     private ButtonsAndText buttonsAndText = new ButtonsAndText();
-    private GameData gameData =new GameData();
-    private GameLoader gameLoader = new GameLoader(ranking, menuScene, backgroundScene, game);
+    private GameData gameData = new GameData();
     private Stage primaryStage;
+    private Game game = new Game(gameData, ranking, menuScene);
     private VBox menuButtons = setMenuButtons();
 
     public void start(Stage primaryStage) {
@@ -43,6 +41,11 @@ public class Menu {
         borderPane.setCenter(menuButtons);
         borderPane.setBackground(backgroundScene.getBackground());
         borderPane.setBottom(difficultyButtons());
+        for (Button but : difficultButtons) {
+            if (but.getText().equals(gameData.getGameDifficult().getName())) {
+                but.setStyle("-fx-background-color: chartreuse");
+            }
+        }
 
         primaryStage.setScene(menuScene);
         primaryStage.show();
@@ -52,7 +55,6 @@ public class Menu {
 
     private HBox difficultyButtons() {
         HBox hBox = new HBox(80);
-        int counter = 0;
 
         for (GameDifficult gameDif : GameDifficult.values()) {
             Button button = buttonsAndText.newButton(gameDif.getName(), 200, 40);
@@ -63,8 +65,7 @@ public class Menu {
             });
 
             hBox.getChildren().add(button);
-            difficultButtons[counter] = button;
-            counter++;
+            difficultButtons.add(button);
         }
 
         hBox.setAlignment(Pos.CENTER);
@@ -88,15 +89,13 @@ public class Menu {
 
         Button start = buttonsAndText.newButton("Start new\n   game", 200, 100);
         start.setOnAction(param -> {
-            if (Objects.isNull(game)) {
-                game = new Game(gameData, ranking, menuScene, gameLoader);
-            }
+            gameData.setStartOfGame(gameData.getGameDifficult());
             game.game(primaryStage);
         });
 
         Button load = buttonsAndText.newButton("Load game", 200, 100);
         load.setOnAction(param -> {
-            gameLoader.Start(primaryStage);
+            game.gameLoader(primaryStage);
         });
 
 
@@ -110,7 +109,7 @@ public class Menu {
         Button exit = buttonsAndText.newButton("Exit", 200, 100);
         exit.setOnAction(p -> {
             dataHandler.saveFile(this.ranking.getBestUsers(), GameStatics.RANKING_PATH);
-            dataHandler.saveFile(gameLoader.getList(), GameStatics.GAMEDATA_PATH);
+            dataHandler.saveFile(game.getGameLoader().getList(), GameStatics.GAMEDATA_PATH);
             primaryStage.close();
 
         });
