@@ -129,15 +129,15 @@ public class GameLoader {
         scene = new Scene(borderPane, GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT, Color.WHITE);
     }
 
-    public List<GameData> getList() {
-        return list;
-    }
-
     public void addGameData(GameData gameData) {
         if (list.size() < 10) {
             list.add(gameData);
         }
 
         list.sort(GameData::compareTo);
+    }
+
+    public void saveGameData() {
+        dataHandler.saveFile(list, GameStatics.GAMEDATA_PATH);
     }
 }

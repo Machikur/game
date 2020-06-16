@@ -22,7 +22,6 @@ public class ButtonsAndText {
         for (Button button : buttons) {
             hbox.getChildren().add(button);
         }
-
         return hbox;
     }
 

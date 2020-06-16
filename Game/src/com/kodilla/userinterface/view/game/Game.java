@@ -86,11 +86,9 @@ public class Game {
                 if (matchesValue > 0) {
                     dragonTurn();
                 }
-
             } else button.setTextFill(Color.RED);
         });
     }
-
 
     private Stage getStatement() {
         final String baseText = GameStatics.DRAGON_NAME + " się zastanawia";
@@ -112,12 +110,10 @@ public class Game {
         Stage stage = new Stage();
         stage.setScene(scene);
         pauseTransition.play();
-
         return stage;
     }
 
     private void setWinner(String winner) {
-
         Text winnerText = new Text();
         winnerText.setText("Wygrał: " + winner + ", Wynik : " + gameData.getUserScore() + "-" + gameData.getDragonScore());
         winnerText.setFont(Font.font(null, FontWeight.BOLD, FontPosture.REGULAR, 30));
@@ -147,16 +143,12 @@ public class Game {
     }
 
     private void setGameScene() {
-
-
         setBackgroundPane();
         borderPane.setTop(backgroundPane);
         borderPane.setMaxSize(GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT);
-
         HBox hbox = buttonsAndText.addHBoxOfButtons(operativeButtons);
         borderPane.setBottom(hbox);
         borderPane.setCenter(matchesHBox.gethBox(matchesValue));
-
     }
 
     private Button[] getOperativeButtons() {
@@ -179,7 +171,7 @@ public class Game {
     }
 
     private void dragonTurn() {
-        blockButtons();
+        unblockButtons(true);
         Stage stage = getStatement();
         stage.show();
         double time = random.nextInt(10) / 10f;
@@ -193,20 +185,14 @@ public class Game {
                 setWinner(GameStatics.DRAGON_NAME);
             }
             stage.close();
-            unblockButtons();
+            unblockButtons(false);
         });
         pauseTransition.play();
     }
 
-    private void blockButtons() {
+    private void unblockButtons(boolean option) {
         for (Button operativeButton : operativeButtons) {
-            operativeButton.setDisable(true);
-        }
-    }
-
-    private void unblockButtons() {
-        for (Button operativeButton : operativeButtons) {
-            operativeButton.setDisable(false);
+            operativeButton.setDisable(option);
         }
     }
 
@@ -233,6 +219,7 @@ public class Game {
         Button saveAndExit = buttonsAndText.newButton("Save and Exit", 200, 20);
         saveAndExit.setOnAction(p -> {
             gameLoader.addGameData(new GameData(gameData.getUserScore(), gameData.getDragonScore(), gameData.getGameDifficult()));
+            gameLoader.saveGameData();
             gameData.setStartOfGame(gameData.getGameDifficult());
             primaryStage.setScene(menuScene);
             primaryStage.show();
@@ -262,7 +249,6 @@ public class Game {
         backgroundPane.setLeft(userScoreText);
         backgroundPane.setRight(dragonScoreText);
         backgroundPane.setTop(diffText);
-
         backgroundPane.setPrefSize(backgroundScene.getImageback().getWidth(), backgroundScene.getImageback().getHeight());
     }
 
@@ -271,10 +257,5 @@ public class Game {
         this.gameData.setDragonScore(dragonScore);
         this.gameData.setGameDifficult(gameDifficult);
     }
-
-    public GameLoader getGameLoader() {
-        return gameLoader;
-    }
-
 }
 

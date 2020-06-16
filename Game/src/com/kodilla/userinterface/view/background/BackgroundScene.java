@@ -20,11 +20,10 @@ public class BackgroundScene {
         BackgroundSize backgroundSize = new BackgroundSize(GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         return new Background(backgroundImage);
-
     }
 
     public Background getBackgroundForMatches() {
-        BackgroundSize backgroundSize = new BackgroundSize(GameStatics.SCENE_HEIGHT/10, GameStatics.SCENE_HEIGHT/10, false, false, false, true);
+        BackgroundSize backgroundSize = new BackgroundSize(GameStatics.SCENE_HEIGHT / 10, GameStatics.SCENE_HEIGHT / 10, false, false, false, true);
         BackgroundImage backgroundImage1 = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         return new Background(backgroundImage1);
     }

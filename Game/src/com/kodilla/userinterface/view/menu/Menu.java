@@ -107,8 +107,6 @@ public class Menu {
 
         Button exit = buttonsAndText.newButton("Exit", 200, 100);
         exit.setOnAction(p -> {
-            dataHandler.saveFile(ranking.getBestUsers(), GameStatics.RANKING_PATH);
-            dataHandler.saveFile(game.getGameLoader().getList(), GameStatics.GAMEDATA_PATH);
             primaryStage.close();
 
         });

@@ -20,20 +20,18 @@ import java.util.List;
 import java.util.Objects;
 
 public class Ranking {
-
-
     private Stage stage;
     private Scene scene;
     private Scene menuScene;
     private BackgroundScene backgroundScene;
     private ButtonsAndText buttonsAndText = new ButtonsAndText();
     private List<UserScore> bestUsers;
+    private DataHandler dataHandler = new DataHandler();
 
     public Ranking(Scene menuScene, BackgroundScene backgroundScene) {
         this.menuScene = menuScene;
         this.backgroundScene = backgroundScene;
 
-        DataHandler dataHandler = new DataHandler();
         bestUsers = (ArrayList<UserScore>) dataHandler.loadFile(GameStatics.RANKING_PATH);
         if (Objects.isNull(bestUsers)) {
             bestUsers = new ArrayList<>();
@@ -50,8 +48,9 @@ public class Ranking {
     public void addUser(UserScore user) {
         if (bestUsers.size() < 10 || bestUsers.get(9).getPoints() < user.getPoints()) {
             bestUsers.add(user);
+            bestUsers.sort(Comparator.comparingInt(UserScore::getPoints));
+            dataHandler.saveFile(bestUsers, GameStatics.RANKING_PATH);
         }
-        bestUsers.sort(Comparator.comparingInt(UserScore::getPoints));
     }
 
     private Text bestUserToString() {
@@ -65,31 +64,21 @@ public class Ranking {
             }
             text.setText(records.toString());
         }
-
         return buttonsAndText.getTextEffect(text);
-
     }
 
     private HBox getDefinedHBox() {
         HBox hBox = new HBox();
-        hBox.setPadding(new Insets(0, 270, 0, 300));
-        hBox.getChildren().add(getButton());
-        return hBox;
-    }
-
-    private Button getButton() {
         Button button = buttonsAndText.newButton("Menu", 200, 20);
         button.setOnAction(param -> {
             stage.setScene(menuScene);
             stage.show();
         });
-        return button;
-
+        hBox.setPadding(new Insets(0, 270, 0, 300));
+        hBox.getChildren().add(button);
+        return hBox;
     }
 
-    public List<UserScore> getBestUsers() {
-        return bestUsers;
-    }
 
     public void setScene() {
         BorderPane border = new BorderPane();
@@ -100,8 +89,6 @@ public class Ranking {
         HBox hBox = getDefinedHBox();
         hBox.setAlignment(Pos.CENTER);
         border.setBottom(hBox);
-
-
         scene = new Scene(border, GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT);
     }
 }
