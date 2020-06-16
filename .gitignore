@@ -22,6 +22,8 @@ build/
 out/
 **/out/
 **/build/
+**/data
+
 
 ### NetBeans ###
 /nbproject/private/
