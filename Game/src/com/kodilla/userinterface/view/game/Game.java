@@ -58,7 +58,7 @@ public class Game {
     }
 
     public void game(Stage primaryStage) {
-        matchesValue = GameStatics.DEFAULT_MATCHES_VALUE;
+        this.matchesValue = GameStatics.DEFAULT_MATCHES_VALUE;
         setGameScene();
         this.primaryStage = primaryStage;
         primaryStage.setScene(gameScene);
@@ -99,7 +99,7 @@ public class Game {
         VBox vBox = new VBox();
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(0.2));
         pauseTransition.setOnFinished(param -> {
-            if (text.getText().length() > 21) {
+            if (text.getText().length() > baseText.length() + 3) {
                 text.setText(baseText);
             } else {
                 text.setText(text.getText() + ".");

@@ -134,7 +134,7 @@ public class GameLoader {
     }
 
     public void addGameData(GameData gameData) {
-        if (list.size() < 10 && !list.contains(gameData)) {
+        if (list.size() < 10) {
             list.add(gameData);
         }
 

@@ -38,14 +38,10 @@ public class Menu {
 
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
+
         borderPane.setCenter(menuButtons);
         borderPane.setBackground(backgroundScene.getBackground());
         borderPane.setBottom(difficultyButtons());
-        for (Button but : difficultButtons) {
-            if (but.getText().equals(gameData.getGameDifficult().getName())) {
-                but.setStyle("-fx-background-color: chartreuse");
-            }
-        }
 
         primaryStage.setScene(menuScene);
         primaryStage.show();
@@ -63,6 +59,9 @@ public class Menu {
                 setButtonsColor();
                 button.setStyle("-fx-background-color: chartreuse");
             });
+            if (button.getText().equals(gameData.getGameDifficult().getName())) {
+                button.setStyle("-fx-background-color: chartreuse");
+            }
 
             hBox.getChildren().add(button);
             difficultButtons.add(button);
@@ -99,22 +98,22 @@ public class Menu {
         });
 
 
-        Button ranking = buttonsAndText.newButton("Ranking", 200, 100);
-        ranking.setOnAction(param ->
-                this.ranking.getRanking(primaryStage));
+        Button rankingButton = buttonsAndText.newButton("Ranking", 200, 100);
+        rankingButton.setOnAction(param ->
+                ranking.getRanking(primaryStage));
 
         Button rulesButton = buttonsAndText.newButton("Show rules", 200, 100);
         rulesButton.setOnAction(param -> rules.getRules(primaryStage, menuScene));
 
         Button exit = buttonsAndText.newButton("Exit", 200, 100);
         exit.setOnAction(p -> {
-            dataHandler.saveFile(this.ranking.getBestUsers(), GameStatics.RANKING_PATH);
+            dataHandler.saveFile(ranking.getBestUsers(), GameStatics.RANKING_PATH);
             dataHandler.saveFile(game.getGameLoader().getList(), GameStatics.GAMEDATA_PATH);
             primaryStage.close();
 
         });
 
-        vBox.getChildren().addAll(start, load, ranking, rulesButton, exit);
+        vBox.getChildren().addAll(start, load, rankingButton, rulesButton, exit);
         vBox.setAlignment(Pos.CENTER);
         return vBox;
     }
