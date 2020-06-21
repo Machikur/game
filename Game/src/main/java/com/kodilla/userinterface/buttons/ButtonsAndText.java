@@ -1,4 +1,4 @@
-package com.kodilla.userinterface.view.buttons;
+package com.kodilla.userinterface.buttons;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -16,7 +16,7 @@ public class ButtonsAndText {
     public HBox addHBoxOfButtons(Button[] buttons) {
         HBox hbox = new HBox();
         hbox.setPadding(new Insets(0, 15, 0, 15));
-        hbox.setSpacing(100);
+        hbox.setSpacing(70);
         hbox.setStyle("-fx-background-color: \t#808080;");
 
         for (Button button : buttons) {

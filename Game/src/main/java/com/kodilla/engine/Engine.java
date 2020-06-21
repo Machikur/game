@@ -3,8 +3,12 @@ package com.kodilla.engine;
 import java.util.Random;
 
 public class Engine {
-    Random random = new Random();
+    private Random random = new Random();
     private GameDifficult gameDifficult;
+
+    public void setGameDifficult(GameDifficult gameDifficult) {
+        this.gameDifficult = gameDifficult;
+    }
 
     public Engine(GameDifficult gameDifficult) {
         this.gameDifficult = gameDifficult;

@@ -1,12 +1,11 @@
-package com.kodilla.userinterface.view.loadgame;
+package com.kodilla.userinterface.loadgame;
 
 import com.kodilla.datahandler.DataHandler;
 import com.kodilla.datahandler.GameStatics;
 import com.kodilla.engine.GameData;
-import com.kodilla.userinterface.view.background.BackgroundScene;
-import com.kodilla.userinterface.view.buttons.ButtonsAndText;
-import com.kodilla.userinterface.view.game.Game;
-import com.kodilla.userinterface.view.ranking.Ranking;
+import com.kodilla.userinterface.background.BackgroundScene;
+import com.kodilla.userinterface.buttons.ButtonsAndText;
+import com.kodilla.userinterface.game.Game;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,16 +29,14 @@ public class GameLoader {
     private Stage primaryStage;
     private Scene scene;
     private Scene menuScene;
-    private Ranking ranking;
     private Game game;
     private BackgroundScene backgroundScene;
     private Button selectedButton;
     private DataHandler dataHandler = new DataHandler();
 
-    public GameLoader(Ranking ranking, Scene menuScene, BackgroundScene backgroundScene, Game game) {
+    public GameLoader(Scene menuScene, BackgroundScene backgroundScene, Game game) {
         this.backgroundScene = backgroundScene;
         this.menuScene = menuScene;
-        this.ranking = ranking;
         this.game = game;
         this.list = (List<GameData>) dataHandler.loadFile(GameStatics.GAMEDATA_PATH);
         if (Objects.isNull(list)) {

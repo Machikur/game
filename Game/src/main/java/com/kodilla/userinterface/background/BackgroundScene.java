@@ -1,4 +1,4 @@
-package com.kodilla.userinterface.view.background;
+package com.kodilla.userinterface.background;
 
 import com.kodilla.datahandler.GameStatics;
 import javafx.scene.image.Image;
@@ -6,7 +6,8 @@ import javafx.scene.layout.*;
 
 public class BackgroundScene {
 
-    private Image imageback = new Image("resources/castle.jpg", GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT, true, true);
+
+    private Image imageback = new Image("file/main/resources/castle.jpg", GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT, true, true);
     private Image backgroundImage = new Image("resources/green.jpg");
 
     public Background getBackgroundForGame() {

@@ -1,8 +1,8 @@
-package com.kodilla.userinterface.view.rules;
+package com.kodilla.userinterface.rules;
 
 import com.kodilla.datahandler.GameStatics;
-import com.kodilla.userinterface.view.background.BackgroundScene;
-import com.kodilla.userinterface.view.buttons.ButtonsAndText;
+import com.kodilla.userinterface.background.BackgroundScene;
+import com.kodilla.userinterface.buttons.ButtonsAndText;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

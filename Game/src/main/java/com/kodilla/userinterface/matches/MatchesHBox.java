@@ -1,6 +1,6 @@
-package com.kodilla.userinterface.view.matches;
+package com.kodilla.userinterface.matches;
 
-import com.kodilla.userinterface.view.background.BackgroundScene;
+import com.kodilla.userinterface.background.BackgroundScene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;

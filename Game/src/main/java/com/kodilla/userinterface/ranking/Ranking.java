@@ -1,9 +1,8 @@
-package com.kodilla.userinterface.view.ranking;
+package com.kodilla.userinterface.ranking;
 
-import com.kodilla.datahandler.DataHandler;
 import com.kodilla.datahandler.GameStatics;
-import com.kodilla.userinterface.view.background.BackgroundScene;
-import com.kodilla.userinterface.view.buttons.ButtonsAndText;
+import com.kodilla.userinterface.background.BackgroundScene;
+import com.kodilla.userinterface.buttons.ButtonsAndText;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,10 +13,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 
 public class Ranking {
     private Stage stage;
@@ -25,47 +20,20 @@ public class Ranking {
     private Scene menuScene;
     private BackgroundScene backgroundScene;
     private ButtonsAndText buttonsAndText = new ButtonsAndText();
-    private List<UserScore> bestUsers;
-    private DataHandler dataHandler = new DataHandler();
 
     public Ranking(Scene menuScene, BackgroundScene backgroundScene) {
         this.menuScene = menuScene;
         this.backgroundScene = backgroundScene;
 
-        bestUsers = (ArrayList<UserScore>) dataHandler.loadFile(GameStatics.RANKING_PATH);
-        if (Objects.isNull(bestUsers)) {
-            bestUsers = new ArrayList<>();
-        }
     }
 
-    public void getRanking(Stage primaryStage) {
-        setScene();
+    public void getRanking(Stage primaryStage,String bestPlayers) {
+        setScene(bestPlayers);
         this.stage = primaryStage;
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    public void addUser(UserScore user) {
-        if (bestUsers.size() < 10 || bestUsers.get(9).getPoints() < user.getPoints()) {
-            bestUsers.add(user);
-            bestUsers.sort(Comparator.comparingInt(UserScore::getPoints));
-            dataHandler.saveFile(bestUsers, GameStatics.RANKING_PATH);
-        }
-    }
-
-    private Text bestUserToString() {
-        Text text = new Text();
-        if (bestUsers.size() == 0) {
-            text.setText("Brak pozycji w rankingu");
-        } else {
-            StringBuilder records = new StringBuilder();
-            for (int i = 0; i < bestUsers.size(); i++) {
-                records.append(i + 1).append(" ").append(bestUsers.get(i)).append("\n");
-            }
-            text.setText(records.toString());
-        }
-        return buttonsAndText.getTextEffect(text);
-    }
 
     private HBox getDefinedHBox() {
         HBox hBox = new HBox();
@@ -80,10 +48,11 @@ public class Ranking {
     }
 
 
-    public void setScene() {
+    public void setScene(String string) {
         BorderPane border = new BorderPane();
         border.setBackground(backgroundScene.getBackground());
-        Text text = bestUserToString();
+        Text text = new Text(string);
+        text=buttonsAndText.getTextEffect(text);
         text.setTextAlignment(TextAlignment.CENTER);
         border.setCenter(text);
         HBox hBox = getDefinedHBox();

@@ -1,4 +1,4 @@
-package com.kodilla.userinterface.view.ranking;
+package com.kodilla.userinterface.ranking;
 
 import com.kodilla.engine.GameDifficult;
 

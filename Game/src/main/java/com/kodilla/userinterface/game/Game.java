@@ -1,15 +1,16 @@
-package com.kodilla.userinterface.view.game;
+package com.kodilla.userinterface.game;
 
 import com.kodilla.datahandler.GameStatics;
 import com.kodilla.engine.Engine;
 import com.kodilla.engine.GameData;
 import com.kodilla.engine.GameDifficult;
-import com.kodilla.userinterface.view.background.BackgroundScene;
-import com.kodilla.userinterface.view.buttons.ButtonsAndText;
-import com.kodilla.userinterface.view.loadgame.GameLoader;
-import com.kodilla.userinterface.view.matches.MatchesHBox;
-import com.kodilla.userinterface.view.ranking.Ranking;
-import com.kodilla.userinterface.view.ranking.UserScore;
+import com.kodilla.engine.GameRanking;
+import com.kodilla.userinterface.buttons.ButtonsAndText;
+import com.kodilla.userinterface.loadgame.GameLoader;
+import com.kodilla.userinterface.matches.MatchesHBox;
+import com.kodilla.userinterface.ranking.UserScore;
+import com.kodilla.userinterface.background.BackgroundScene;
+import com.kodilla.sounds.*;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -35,9 +36,9 @@ public class Game {
     private final Engine engine;
     private final Scene gameScene = new Scene(borderPane, GameStatics.SCENE_WIDTH, GameStatics.SCENE_HEIGHT, Color.WHITE);
     private int matchesValue = GameStatics.DEFAULT_MATCHES_VALUE;
+    private GameRanking gameRanking;
     private Random random = new Random();
     private Stage primaryStage;
-    private Ranking ranking;
     private Scene menuScene;
     private BackgroundScene backgroundScene = new BackgroundScene();
     private ButtonsAndText buttonsAndText = new ButtonsAndText();
@@ -48,17 +49,20 @@ public class Game {
     private Text userScoreText = new Text();
     private Text dragonScoreText = new Text();
     private Text diffText = new Text();
+    private Sounds sounds = new Sounds();
 
-    public Game(GameData gameData, Ranking ranking, Scene menuScene) {
+    public Game(GameData gameData, Scene menuScene, GameRanking gameRanking) {
+        sounds.playIntro();
+        this.gameRanking=gameRanking;
         this.gameData = gameData;
         this.engine = new Engine(gameData.getGameDifficult());
-        this.ranking = ranking;
         this.menuScene = menuScene;
-        this.gameLoader = new GameLoader(ranking, menuScene, backgroundScene, this);
+        this.gameLoader = new GameLoader( menuScene, backgroundScene, this);
     }
 
     public void game(Stage primaryStage) {
         this.matchesValue = GameStatics.DEFAULT_MATCHES_VALUE;
+        engine.setGameDifficult(gameData.getGameDifficult());
         setGameScene();
         this.primaryStage = primaryStage;
         primaryStage.setScene(gameScene);
@@ -129,10 +133,9 @@ public class Game {
         BorderPane.setAlignment(winnerText, Pos.CENTER);
 
         if (gameData.getUserScore() == 5) {
-            ranking.addUser(new UserScore(GameStatics.USER_NAME, gameData.getUserScore(), gameData.getDragonScore(), gameData.getGameDifficult()));
+            gameRanking.addUser(new UserScore(GameStatics.USER_NAME, gameData.getUserScore(), gameData.getDragonScore(), gameData.getGameDifficult()));
             winnerText.setText("Brawo, wygrałeś z wynikiem " + gameData.getUserScore() + "-" + gameData.getDragonScore());
-            gameData.setUserScore(0);
-            gameData.setDragonScore(0);
+            gameData.setStartOfGame();
         }
 
         HBox hBox = getGameButtons();
@@ -158,12 +161,18 @@ public class Game {
         two.setOnAction(setTakeSomeMatchesActionEvent(2, two));
         Button thre = buttonsAndText.newButton("Zabierz trzy zapałki", 250, 40);
         thre.setOnAction(setTakeSomeMatchesActionEvent(3, thre));
-        return new Button[]{one, two, thre};
+        Button exit= buttonsAndText.newButton("Exit",150,40);
+        exit.setOnAction(p->{
+            primaryStage.setScene(menuScene);
+            primaryStage.show();
+        });
+        return new Button[]{one, two, thre,exit};
     }
 
     private void userTurn(int value) {
         substractMatchesValue(value);
         setMatchesValueView();
+        sounds.playGamerVoice();
         if (matchesValue == 0) {
             gameData.setUserScore(gameData.getUserScore() + 1);
             setWinner(GameStatics.USER_NAME);
@@ -179,6 +188,7 @@ public class Game {
         pauseTransition.setOnFinished(event -> {
             substractMatchesValue(engine.dragonTurn(matchesValue));
             setMatchesValueView();
+            sounds.playDragonVoice();
             if (matchesValue == 0) {
                 stage.close();
                 gameData.setDragonScore(gameData.getDragonScore() + 1);
@@ -220,7 +230,7 @@ public class Game {
         saveAndExit.setOnAction(p -> {
             gameLoader.addGameData(new GameData(gameData.getUserScore(), gameData.getDragonScore(), gameData.getGameDifficult()));
             gameLoader.saveGameData();
-            gameData.setStartOfGame(gameData.getGameDifficult());
+            gameData.setStartOfGame();
             primaryStage.setScene(menuScene);
             primaryStage.show();
 

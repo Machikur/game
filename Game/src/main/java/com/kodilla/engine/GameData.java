@@ -21,10 +21,9 @@ public class GameData implements Serializable, Comparable {
         this.localDate = LocalDate.now();
     }
 
-    public void setStartOfGame(GameDifficult gameDifficult) {
+    public void setStartOfGame() {
         userScore = 0;
         dragonScore = 0;
-        this.gameDifficult = gameDifficult;
     }
 
     public int getUserScore() {
