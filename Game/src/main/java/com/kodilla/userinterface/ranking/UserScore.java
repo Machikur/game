@@ -17,14 +17,14 @@ public class UserScore implements Serializable {
         this.name = name;
         this.scoreUser = scoreUser;
         this.scoreDragon = scoreDragon;
-        localDate = LocalDate.now();
-        points = scoreDragon - scoreUser;
+        this.localDate = LocalDate.now();
+        this.points = scoreDragon - scoreUser;
         this.gameDifficult = gameDifficult;
     }
 
     @Override
     public String toString() {
-        return "Użytkownik: " + name + ", Wynik: " + scoreUser + "-" + scoreDragon + " " + localDate + " Poziom trudności: " + gameDifficult;
+        return "User: " + name + ", Score: " + scoreUser + "-" + scoreDragon + " " + localDate + " Level: " + gameDifficult;
     }
 
     public int getPoints() {

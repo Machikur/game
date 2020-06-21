@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class GameRanking {
 
-   private DataHandler dataHandler = new DataHandler();
-
+    private static final int MAX_LIST_SIZE = 10;
+    private DataHandler dataHandler = new DataHandler();
     private List<UserScore> bestUsers;
 
     public GameRanking() {
@@ -23,9 +24,12 @@ public class GameRanking {
     }
 
     public void addUser(UserScore user) {
-        if (bestUsers.size() < 10 || bestUsers.get(9).getPoints() < user.getPoints()) {
+        if (bestUsers.size() < MAX_LIST_SIZE || bestUsers.get(MAX_LIST_SIZE - 1).getPoints() > user.getPoints()) {
             bestUsers.add(user);
-            bestUsers.sort(Comparator.comparingInt(UserScore::getPoints));
+            bestUsers = bestUsers.stream()
+                    .sorted(Comparator.comparingInt(UserScore::getPoints))
+                    .limit(MAX_LIST_SIZE)
+                    .collect(Collectors.toList());
             dataHandler.saveFile(bestUsers, GameStatics.RANKING_PATH);
         }
     }
@@ -36,10 +40,17 @@ public class GameRanking {
         } else {
             StringBuilder records = new StringBuilder();
             for (int i = 0; i < bestUsers.size(); i++) {
-                records.append(i + 1).append(" ").append(bestUsers.get(i)).append("\n");
+                records.append(i + 1 + ".").append(" ").append(bestUsers.get(i)).append("\n");
             }
-
             return records.toString();
         }
+    }
+
+    public List<UserScore> getBestUsers() {
+        return bestUsers;
+    }
+
+    public void setBestUsers(List<UserScore> bestUsers) {
+        this.bestUsers = bestUsers;
     }
 }

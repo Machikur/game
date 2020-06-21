@@ -29,8 +29,8 @@ public class Rules {
         BorderPane border = new BorderPane();
         border.setBackground(backgroundScene.getBackground());
 
-        Text text = new Text(" Znalazłeś sie u bram zamku którego strzegą smoki\n Aby się dostać musisz je pokonać\n" +
-                " Chcą one abyście na zmiane ciągneli po jednej,\n dwóch lub trzech zapałkach.\n Wygrywa ten który pociągnie ostatni\n Musisz pokonać go 5 razy\n Powodzenia");
+        Text text = new Text("You got the gates of the castle guarded by dragons \n To get there you must defeat them \n" +
+                "They want you to take one, two or three matches alternately. \n The last one wins \n You have to beat him 5 times \n Good luck");
         text = buttonsAndText.getTextEffect(text);
         border.setCenter(text);
 

@@ -9,18 +9,20 @@ import com.kodilla.userinterface.buttons.ButtonsAndText;
 import com.kodilla.userinterface.game.Game;
 import com.kodilla.userinterface.ranking.Ranking;
 import com.kodilla.userinterface.rules.Rules;
-import com.kodilla.sounds.Sounds;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class Menu {
@@ -34,17 +36,17 @@ public class Menu {
     private ButtonsAndText buttonsAndText = new ButtonsAndText();
     private GameData gameData = new GameData();
     private Stage primaryStage;
-    private Game game;
-    private VBox menuButtons = setMenuButtons();
-    private GameRanking gameRanking=new GameRanking();
+    private GameRanking gameRanking = new GameRanking();
+    private String userName = "User";
+    private Game game = new Game(gameData, menuScene, gameRanking, userName);
+
 
     public void start(Stage primaryStage) {
 
+        this.game = new Game(gameData, menuScene, gameRanking, userName);
         this.primaryStage = primaryStage;
-
-        borderPane.setCenter(menuButtons);
-        borderPane.setBackground(backgroundScene.getBackground());
-        borderPane.setBottom(difficultyButtons());
+        this.borderPane.setCenter(setName());
+        this.borderPane.setBackground(backgroundScene.getBackground());
 
         primaryStage.setScene(menuScene);
         primaryStage.show();
@@ -89,12 +91,12 @@ public class Menu {
     private VBox setMenuButtons() {
         VBox vBox = new VBox(30);
 
+        Text text = new Text(userName);
+        buttonsAndText.getTextEffect(text);
+
         Button start = buttonsAndText.newButton("Start new\n   game", 200, 100);
         start.setOnAction(param -> {
             gameData.setStartOfGame();
-            if (Objects.isNull(game)){
-                game=new Game(gameData,menuScene,gameRanking);
-            }
             game.game(primaryStage);
         });
 
@@ -106,7 +108,7 @@ public class Menu {
 
         Button rankingButton = buttonsAndText.newButton("Ranking", 200, 100);
         rankingButton.setOnAction(param ->
-                ranking.getRanking(primaryStage,gameRanking.bestUserToString()));
+                ranking.getRanking(primaryStage, gameRanking.bestUserToString()));
 
         Button rulesButton = buttonsAndText.newButton("Show rules", 200, 100);
         rulesButton.setOnAction(param -> rules.getRules(primaryStage, menuScene));
@@ -114,9 +116,31 @@ public class Menu {
         Button exit = buttonsAndText.newButton("Exit", 200, 100);
         exit.setOnAction(p -> primaryStage.close());
 
-        vBox.getChildren().addAll(start, load, rankingButton, rulesButton, exit);
+        vBox.getChildren().addAll(text, start, load, rankingButton, rulesButton, exit);
         vBox.setAlignment(Pos.CENTER);
         return vBox;
+    }
+
+    public VBox setName() {
+        VBox vbox = new VBox();
+        TextField textField = new TextField();
+        textField.setText(userName);
+        textField.setFont(Font.font(null, 30));
+        textField.setAlignment(Pos.CENTER);
+        borderPane.setCenter(textField);
+        textField.setOnKeyPressed(key -> {
+            if (key.getCode().equals(KeyCode.ENTER)) {
+                userName = textField.getText();
+                borderPane.setCenter(setMenuButtons());
+                borderPane.setBottom(difficultyButtons());
+            }
+        });
+        Text text = new Text("Put your name and press enter");
+        buttonsAndText.getTextEffect(text);
+        vbox.getChildren().addAll(text, textField);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setMaxSize(200, 300);
+        return vbox;
     }
 
 }

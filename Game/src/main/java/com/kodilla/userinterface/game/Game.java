@@ -5,12 +5,12 @@ import com.kodilla.engine.Engine;
 import com.kodilla.engine.GameData;
 import com.kodilla.engine.GameDifficult;
 import com.kodilla.engine.GameRanking;
+import com.kodilla.sounds.Sounds;
+import com.kodilla.userinterface.background.BackgroundScene;
 import com.kodilla.userinterface.buttons.ButtonsAndText;
 import com.kodilla.userinterface.loadgame.GameLoader;
 import com.kodilla.userinterface.matches.MatchesHBox;
 import com.kodilla.userinterface.ranking.UserScore;
-import com.kodilla.userinterface.background.BackgroundScene;
-import com.kodilla.sounds.*;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -43,21 +43,23 @@ public class Game {
     private BackgroundScene backgroundScene = new BackgroundScene();
     private ButtonsAndText buttonsAndText = new ButtonsAndText();
     private GameData gameData;
-    private Button[] operativeButtons = getOperativeButtons();
     private GameLoader gameLoader;
     private BorderPane backgroundPane = new BorderPane();
     private Text userScoreText = new Text();
     private Text dragonScoreText = new Text();
     private Text diffText = new Text();
     private Sounds sounds = new Sounds();
+    private String userName;
+    private Button[] operativeButtons = getOperativeButtons();
 
-    public Game(GameData gameData, Scene menuScene, GameRanking gameRanking) {
-        sounds.playIntro();
-        this.gameRanking=gameRanking;
+    public Game(GameData gameData, Scene menuScene, GameRanking gameRanking, String userName) {
+        this.userName = userName;
+        this.sounds.playIntro();
+        this.gameRanking = gameRanking;
         this.gameData = gameData;
         this.engine = new Engine(gameData.getGameDifficult());
         this.menuScene = menuScene;
-        this.gameLoader = new GameLoader( menuScene, backgroundScene, this);
+        this.gameLoader = new GameLoader(menuScene, backgroundScene, this);
     }
 
     public void game(Stage primaryStage) {
@@ -95,7 +97,7 @@ public class Game {
     }
 
     private Stage getStatement() {
-        final String baseText = GameStatics.DRAGON_NAME + " się zastanawia";
+        final String baseText = GameStatics.DRAGON_NAME + " is thinking";
         Text text = new Text(baseText);
         text.setFont(Font.font(null, FontWeight.NORMAL, FontPosture.REGULAR, 30));
         VBox vBox = new VBox();
@@ -133,8 +135,9 @@ public class Game {
         BorderPane.setAlignment(winnerText, Pos.CENTER);
 
         if (gameData.getUserScore() == 5) {
-            gameRanking.addUser(new UserScore(GameStatics.USER_NAME, gameData.getUserScore(), gameData.getDragonScore(), gameData.getGameDifficult()));
-            winnerText.setText("Brawo, wygrałeś z wynikiem " + gameData.getUserScore() + "-" + gameData.getDragonScore());
+            sounds.playWinner();
+            gameRanking.addUser(new UserScore(userName, gameData.getUserScore(), gameData.getDragonScore(), gameData.getGameDifficult()));
+            winnerText.setText("Congratulate, your score is " + gameData.getUserScore() + "-" + gameData.getDragonScore());
             gameData.setStartOfGame();
         }
 
@@ -155,18 +158,18 @@ public class Game {
     }
 
     private Button[] getOperativeButtons() {
-        Button one = buttonsAndText.newButton("Zabierz jedną zapałke", 250, 40);
+        Button one = buttonsAndText.newButton("Take one match", 250, 40);
         one.setOnAction(setTakeSomeMatchesActionEvent(1, one));
-        Button two = buttonsAndText.newButton("Zabierz dwie zapałki", 250, 40);
+        Button two = buttonsAndText.newButton("Take two matches", 250, 40);
         two.setOnAction(setTakeSomeMatchesActionEvent(2, two));
-        Button thre = buttonsAndText.newButton("Zabierz trzy zapałki", 250, 40);
+        Button thre = buttonsAndText.newButton("Take three matches", 250, 40);
         thre.setOnAction(setTakeSomeMatchesActionEvent(3, thre));
-        Button exit= buttonsAndText.newButton("Exit",150,40);
-        exit.setOnAction(p->{
+        Button exit = buttonsAndText.newButton("Exit", 150, 40);
+        exit.setOnAction(p -> {
             primaryStage.setScene(menuScene);
             primaryStage.show();
         });
-        return new Button[]{one, two, thre,exit};
+        return new Button[]{one, two, thre, exit};
     }
 
     private void userTurn(int value) {
@@ -175,7 +178,7 @@ public class Game {
         sounds.playGamerVoice();
         if (matchesValue == 0) {
             gameData.setUserScore(gameData.getUserScore() + 1);
-            setWinner(GameStatics.USER_NAME);
+            setWinner(userName);
         }
     }
 

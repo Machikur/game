@@ -27,7 +27,7 @@ public class Ranking {
 
     }
 
-    public void getRanking(Stage primaryStage,String bestPlayers) {
+    public void getRanking(Stage primaryStage, String bestPlayers) {
         setScene(bestPlayers);
         this.stage = primaryStage;
         primaryStage.setScene(scene);
@@ -52,7 +52,7 @@ public class Ranking {
         BorderPane border = new BorderPane();
         border.setBackground(backgroundScene.getBackground());
         Text text = new Text(string);
-        text=buttonsAndText.getTextEffect(text);
+        text = buttonsAndText.getTextEffect(text);
         text.setTextAlignment(TextAlignment.CENTER);
         border.setCenter(text);
         HBox hBox = getDefinedHBox();

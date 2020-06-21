@@ -6,11 +6,11 @@ public class Engine {
     private Random random = new Random();
     private GameDifficult gameDifficult;
 
-    public void setGameDifficult(GameDifficult gameDifficult) {
+    public Engine(GameDifficult gameDifficult) {
         this.gameDifficult = gameDifficult;
     }
 
-    public Engine(GameDifficult gameDifficult) {
+    public void setGameDifficult(GameDifficult gameDifficult) {
         this.gameDifficult = gameDifficult;
     }
 
@@ -29,7 +29,7 @@ public class Engine {
                 return matchesValue;
             }
             if (result == 0) {
-                return random.nextInt(2) + 1;
+                return 2;
             } else {
                 return result;
             }
